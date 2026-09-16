@@ -1,0 +1,228 @@
+.card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand-400);
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-brand-500), var(--color-accent-500));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-bold);
+  font-size: var(--text-xs);
+}
+
+.username {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.date {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.metaBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sportTag {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.matchSection {
+  background-color: var(--color-bg-base);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.matchTeams {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.team {
+  font-size: var(--text-base);
+}
+
+.vs {
+  font-size: var(--text-xs);
+  color: var(--color-accent-400);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+}
+
+.matchTime {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.selectionBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+}
+
+.selectionInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.selectionLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.selectionValue {
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+}
+
+.oddsBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.oddsLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.oddsValue {
+  font-size: var(--text-xl);
+  font-weight: var(--font-extrabold);
+  color: var(--color-accent-400);
+}
+
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--color-border-soft);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.metricValue {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.return {
+  color: var(--color-success-400);
+}
+
+.stars {
+  color: var(--color-accent-400);
+  font-size: var(--text-xs);
+  letter-spacing: 1px;
+}
+
+.analysisContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.analysisToggle {
+  align-self: flex-start;
+  font-size: var(--text-xs);
+  color: var(--color-brand-300);
+  font-weight: var(--font-medium);
+  transition: color var(--transition-fast);
+}
+
+.analysisToggle:hover {
+  color: var(--color-brand-200);
+}
+
+.analysisText {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-base);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  line-height: var(--leading-relaxed);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.detailLink {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-medium);
+  transition: color var(--transition-fast);
+}
+
+.detailLink:hover {
+  color: var(--color-brand-400);
+}

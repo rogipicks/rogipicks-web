@@ -1,0 +1,62 @@
+.card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  transition:
+    border-color  var(--transition-base),
+    box-shadow    var(--transition-base),
+    transform     var(--transition-base);
+  width: 100%;
+}
+
+/* Variants */
+.default  { background: var(--color-bg-surface); }
+.elevated { background: var(--color-bg-elevated); box-shadow: var(--shadow-md); }
+.glass    {
+  background: hsl(225 18% 12% / 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: hsl(225 14% 30% / 0.5);
+}
+
+/* Hover */
+.hoverable {
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+.hoverable:hover {
+  border-color: var(--color-brand-500);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+.hoverable:active {
+  transform: translateY(0);
+}
+
+/* Padding */
+.pad-none { padding: 0; }
+.pad-sm   { padding: var(--space-3); }
+.pad-md   { padding: var(--space-5); }
+.pad-lg   { padding: var(--space-8); }
+
+/* Subcomponents */
+.header {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-soft);
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  flex: 1;
+}
+
+.footer {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-soft);
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
