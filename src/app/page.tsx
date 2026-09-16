@@ -11,7 +11,7 @@ export default function HomePage() {
         <section className={styles.hero}>
           <div className={`container ${styles.heroInner}`}>
             <div className={styles.heroLabel}>
-              <span>🎯 La plataforma de tipsters</span>
+              <span>⚽ La plataforma definitiva de tipsters</span>
             </div>
             <h1 className={styles.heroTitle}>
               Tus picks, <br />

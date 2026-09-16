@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ROUTES } from '@/constants/routes';
 import styles from './Navbar.module.css';
 
@@ -10,7 +11,16 @@ export function Navbar() {
       <div className={styles.inner}>
         {/* Logo */}
         <Link href={ROUTES.HOME} className={styles.logo} aria-label="RogiPicks - Inicio">
-          <span className={styles.logoIcon}>🎯</span>
+          <div className={styles.logoImgWrapper}>
+            <Image
+              src="/images/logo.jpg"
+              alt="RogiPicks"
+              width={38}
+              height={38}
+              className={styles.logoImg}
+              priority
+            />
+          </div>
           <span className={styles.logoText}>
             Rogi<strong>Picks</strong>
           </span>

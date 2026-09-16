@@ -78,8 +78,20 @@ ol {
 /* ─── Selection ───────────────────────────────────────────────────────────── */
 
 ::selection {
-  background: hsl(230 60% 45% / 0.35);
+  background: hsl(198 100% 50% / 0.35);
   color: var(--color-text-primary);
+}
+
+/* ─── Dev Tools & Overlay Suppression ─────────────────────────────────────── */
+
+nextjs-portal,
+[data-nextjs-toast],
+div[data-nextjs-dev-tools-indicator],
+#nextjs-dev-tools {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* ─── Layout Utility ──────────────────────────────────────────────────────── */

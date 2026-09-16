@@ -10,7 +10,8 @@
   padding-top: calc(var(--navbar-height) + var(--space-24));
   padding-bottom: var(--space-24);
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, hsl(230 60% 45% / 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 50% at 50% -5%, hsl(198 100% 50% / 0.16) 0%, transparent 65%),
+    radial-gradient(circle 300px at 50% 30%, hsl(204 100% 46% / 0.08) 0%, transparent 80%),
     var(--color-bg-base);
 }
 
@@ -29,8 +30,9 @@
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--color-brand-300);
-  background: hsl(230 60% 45% / 0.12);
-  border: 1px solid hsl(230 60% 45% / 0.25);
+  background: hsl(198 100% 50% / 0.08);
+  border: 1px solid hsl(198 100% 50% / 0.28);
+  box-shadow: 0 0 16px hsl(198 100% 50% / 0.12);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
   animation: fadeInDown 0.6s both;
@@ -46,10 +48,11 @@
 }
 
 .heroHighlight {
-  background: linear-gradient(135deg, var(--color-brand-300), var(--color-accent-400));
+  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 45%, #00a2ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 24px hsl(198 100% 50% / 0.35));
 }
 
 .heroDesc {
@@ -73,10 +76,10 @@
   font-size: var(--text-base);
   font-weight: var(--font-semibold);
   color: #fff;
-  background: var(--color-brand-500);
+  background: linear-gradient(135deg, var(--color-brand-400), var(--color-brand-600));
   padding: var(--space-4) var(--space-8);
   border-radius: var(--radius-xl);
-  box-shadow: 0 4px 20px hsl(230 60% 45% / 0.5), var(--shadow-glow);
+  box-shadow: 0 4px 20px hsl(198 100% 50% / 0.4), var(--shadow-glow);
   transition:
     background-color var(--transition-fast),
     box-shadow       var(--transition-fast),
@@ -85,9 +88,9 @@
 }
 
 .btnPrimary:hover {
-  background: var(--color-brand-400);
+  background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-500));
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px hsl(230 60% 45% / 0.6);
+  box-shadow: 0 8px 28px hsl(198 100% 50% / 0.55), 0 0 32px hsl(198 100% 50% / 0.4);
 }
 
 .btnSecondary {
@@ -97,10 +100,12 @@
   padding: var(--space-4) var(--space-6);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
-  background: transparent;
+  background: hsl(222 32% 10% / 0.6);
+  backdrop-filter: blur(8px);
   transition:
     color           var(--transition-fast),
     border-color    var(--transition-fast),
+    box-shadow       var(--transition-fast),
     transform       var(--transition-fast);
   text-decoration: none;
 }
@@ -108,6 +113,7 @@
 .btnSecondary:hover {
   color: var(--color-text-primary);
   border-color: var(--color-brand-400);
+  box-shadow: 0 0 16px hsl(198 100% 50% / 0.2);
   transform: translateY(-2px);
 }
 
@@ -130,19 +136,20 @@
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-xl);
   text-align: center;
-  transition: border-color var(--transition-base), transform var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
   animation: fadeInUp 0.5s both;
 }
 
 .statCard:hover {
-  border-color: var(--color-brand-500);
+  border-color: var(--color-brand-400);
+  box-shadow: 0 8px 30px hsl(198 100% 50% / 0.18);
   transform: translateY(-4px);
 }
 
 .statValue {
   font-size: var(--text-3xl);
   font-weight: var(--font-extrabold);
-  background: linear-gradient(135deg, var(--color-brand-300), var(--color-accent-400));
+  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 55%, #00a2ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
