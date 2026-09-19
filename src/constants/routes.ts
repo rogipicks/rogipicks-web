@@ -11,6 +11,9 @@ export const ROUTES = {
   PICKS: '/picks',
   PICK_DETAIL: (id: string) => `/picks/${id}`,
   LEADERBOARD: '/leaderboard',
+  RETOS: '/retos',
+  BOOKMAKERS: '/casas-de-apuestas',
+  TELEGRAM: '/telegram',
   PROFILE: '/profile',
   PROFILE_USER: (username: string) => `/profile/${username}`,
 } as const;

@@ -2,17 +2,44 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { MOCK_PICKS } from '@/lib/data/mockPicks';
-import { Badge } from '@/components/ui/Badge/Badge';
-import { formatOdds, formatCurrency, formatDate } from '@/lib/utils/formatters';
+import { getAllPicks } from '@/lib/db/picksDb';
+import { formatOdds } from '@/lib/utils/formatters';
 import { ROUTES } from '@/constants/routes';
+import styles from './pickDetail.module.css';
+import { PickDetailCard } from './PickDetailCard';
 
 interface PickDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+function formatMatchDateTime(dateStr?: string): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
+  } catch {
+    return '';
+  }
+}
+
 export async function generateMetadata({ params }: PickDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const pick = MOCK_PICKS.find((p) => p.id === id);
+  let pick;
+  try {
+    const dbPicks = await getAllPicks();
+    pick = dbPicks.find((p) => p.id === id);
+  } catch {
+    // fallback
+  }
+  if (!pick) {
+    pick = MOCK_PICKS.find((p) => p.id === id);
+  }
   return {
     title: pick ? `${pick.selection} — Pick #${id}` : `Pick #${id}`,
     description: pick?.analysis || `Detalle del pick deportivo #${id} en RogiPicks.`,
@@ -21,25 +48,23 @@ export async function generateMetadata({ params }: PickDetailPageProps): Promise
 
 export default async function PickDetailPage({ params }: PickDetailPageProps) {
   const { id } = await params;
-  const pick = MOCK_PICKS.find((p) => p.id === id) || MOCK_PICKS[0];
+  let pick;
+  try {
+    const dbPicks = await getAllPicks();
+    pick = dbPicks.find((p) => p.id === id);
+  } catch {
+    // fallback
+  }
+  if (!pick) {
+    pick = MOCK_PICKS.find((p) => p.id === id);
+  }
 
   if (!pick) {
     notFound();
   }
 
-  const getResultBadge = () => {
-    switch (pick.result) {
-      case 'win':
-        return <Badge variant="success">✅ Pronóstico Acertado</Badge>;
-      case 'loss':
-        return <Badge variant="danger">❌ Pronóstico Fallado</Badge>;
-      case 'push':
-        return <Badge variant="warning">⚪ Pronóstico Nulo</Badge>;
-      case 'pending':
-      default:
-        return <Badge variant="primary">⏳ En Juego / Pendiente</Badge>;
-    }
-  };
+  const homeTeam = pick.match?.homeTeam.name || 'Local';
+  const awayTeam = pick.match?.awayTeam.name || 'Visitante';
 
   return (
     <div className="container" style={{ paddingBlock: 'var(--space-8)', maxWidth: '800px' }}>
@@ -58,87 +83,56 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
         ← Volver a todos los picks
       </Link>
 
-      <div style={{
-        backgroundColor: 'var(--color-bg-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-xl)',
-        padding: 'var(--space-8)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--space-6)',
-      }}>
-        {/* Top Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '9999px',
-              background: 'linear-gradient(135deg, var(--color-brand-500), var(--color-accent-500))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: 'var(--text-sm)'
-            }}>
-              {pick.user?.username.substring(0, 2).toUpperCase()}
+      <PickDetailCard pickId={pick.id} initialResult={pick.result}>
+        {/* Match Section (Fixture Layout) */}
+        <div className={styles.matchSection}>
+          {/* Home team */}
+          <div className={styles.matchTeamSide}>
+            <div className={styles.teamLogoBox}>
+              {pick.match?.homeTeam.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={pick.match.homeTeam.logoUrl}
+                  alt={homeTeam}
+                  className={styles.fixtureLogo}
+                />
+              ) : (
+                <span className={styles.logoLetter}>
+                  {homeTeam.slice(0, 3).toUpperCase()}
+                </span>
+              )}
             </div>
-            <div>
-              <span style={{ display: 'block', fontWeight: 700, fontSize: 'var(--text-base)', color: 'var(--color-text-primary)' }}>
-                @{pick.user?.username}
-              </span>
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
-                Publicado el {formatDate(pick.createdAt)}
-              </span>
-            </div>
+            <span className={styles.teamName}>{homeTeam}</span>
           </div>
-          <div>{getResultBadge()}</div>
-        </div>
 
-        {/* Match Header */}
-        <div style={{
-          backgroundColor: 'var(--color-bg-base)',
-          padding: 'var(--space-6)',
-          borderRadius: 'var(--radius-lg)',
-          textAlign: 'center',
-          border: '1px solid var(--color-border-soft)'
-        }}>
-          <span style={{
-            fontSize: 'var(--text-xs)',
-            textTransform: 'uppercase',
-            color: 'var(--color-accent-400)',
-            fontWeight: 700,
-            letterSpacing: '0.05em'
-          }}>
-            {pick.match?.sport.name}
-          </span>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '16px',
-            marginBlock: 'var(--space-3)',
-            fontSize: 'var(--text-xl)',
-            fontWeight: 800,
-            color: 'var(--color-text-primary)'
-          }}>
-            <span>{pick.match?.homeTeam.name}</span>
-            <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-sm)' }}>VS</span>
-            <span>{pick.match?.awayTeam.name}</span>
+          {/* Center: Date/Time and Dash */}
+          <div className={styles.matchCenter}>
+            {pick.match?.startTime && (
+              <span className={styles.matchDateTime}>
+                {formatMatchDateTime(pick.match.startTime)}
+              </span>
+            )}
+            <span className={styles.matchDash}>-</span>
           </div>
-          {pick.match?.startTime && (
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
-              Fecha del evento: {new Date(pick.match.startTime).toLocaleDateString('es-ES', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </span>
-          )}
+
+          {/* Away team */}
+          <div className={styles.matchTeamSide}>
+            <div className={styles.teamLogoBox}>
+              {pick.match?.awayTeam.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={pick.match.awayTeam.logoUrl}
+                  alt={awayTeam}
+                  className={styles.fixtureLogo}
+                />
+              ) : (
+                <span className={styles.logoLetter}>
+                  {awayTeam.slice(0, 3).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <span className={styles.teamName}>{awayTeam}</span>
+          </div>
         </div>
 
         {/* Prediction Box */}
@@ -167,37 +161,32 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
           </div>
         </div>
 
-        {/* Stake and Metrics */}
+        {/* Metrics: Probabilidad + Confianza */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'var(--space-4)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '60px',
           textAlign: 'center',
           paddingBlock: 'var(--space-4)',
           borderTop: '1px solid var(--color-border-soft)',
           borderBottom: '1px solid var(--color-border-soft)',
         }}>
-          <div>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block' }}>
-              Stake Asignado
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '80px' }}>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Probabilidad
             </span>
-            <span style={{ fontSize: 'var(--text-lg)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-              {pick.stake} / 10u
-            </span>
-          </div>
-          <div>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block' }}>
-              Retorno Potencial
-            </span>
-            <span style={{ fontSize: 'var(--text-lg)', fontWeight: 700, color: 'var(--color-success-400)' }}>
-              {formatCurrency(pick.potentialReturn, 'EUR')}
+            <span style={{ fontSize: 'var(--text-xl)', fontWeight: 800, color: 'hsl(198 100% 60%)' }}>
+              {pick.probability
+                ? (pick.probability.toString().endsWith('%') ? pick.probability : `${pick.probability}%`)
+                : (pick.odds ? `${Math.round(100 / pick.odds)}%` : '—')}
             </span>
           </div>
-          <div>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block' }}>
-              Nivel de Confianza
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '80px' }}>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Confianza
             </span>
-            <span style={{ color: 'var(--color-accent-400)', fontSize: 'var(--text-base)' }}>
+            <span style={{ color: 'var(--color-accent-400)', fontSize: 'var(--text-lg)', letterSpacing: '3px' }}>
               {'★'.repeat(pick.confidence)}{'☆'.repeat(5 - pick.confidence)}
             </span>
           </div>
@@ -207,7 +196,7 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
         {pick.analysis && (
           <div>
             <h4 style={{ fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px' }}>
-              Análisis y Justificación del Tipster
+              Análisis del partido
             </h4>
             <p style={{
               backgroundColor: 'var(--color-bg-base)',
@@ -221,7 +210,50 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
             </p>
           </div>
         )}
-      </div>
+
+        {/* Extra Predictions Section */}
+        {pick.extraPredictions && pick.extraPredictions.length > 0 && (
+          <div>
+            <h4 style={{ fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '12px' }}>
+              Otros pronósticos del partido
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {pick.extraPredictions.map((ep, i) => (
+                <div key={ep.id || i} style={{
+                  backgroundColor: 'var(--color-bg-base)',
+                  border: '1px solid var(--color-border-soft)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--space-4)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--color-text-primary)', fontSize: 'var(--text-sm)' }}>
+                      {ep.bet}
+                    </span>
+                    <span style={{
+                      fontWeight: 800,
+                      color: 'var(--color-accent-400)',
+                      fontSize: 'var(--text-sm)',
+                      background: 'hsl(198 100% 50% / 0.12)',
+                      padding: '2px 8px',
+                      borderRadius: '4px'
+                    }}>
+                      Cuota {ep.odds}
+                    </span>
+                  </div>
+                  {ep.analysis && (
+                    <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.5 }}>
+                      {ep.analysis}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </PickDetailCard>
     </div>
   );
 }

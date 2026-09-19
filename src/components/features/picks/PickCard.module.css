@@ -1,6 +1,6 @@
 .card {
   background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
   display: flex;
@@ -8,13 +8,86 @@
   gap: var(--space-4);
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   position: relative;
+  cursor: pointer;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-brand-400);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
 }
+
+/* ── Result border variants ──────────────────────────────────────────────── */
+
+.cardPending {
+  border-color: hsl(35 95% 55%);
+  box-shadow: 0 0 0 1px hsl(35 95% 55% / 0.25), 0 4px 16px hsl(35 95% 55% / 0.12);
+}
+
+.cardPending:hover {
+  border-color: hsl(35 95% 65%);
+  box-shadow: 0 0 0 1px hsl(35 95% 65% / 0.35), 0 8px 24px -4px hsl(35 95% 55% / 0.25);
+}
+
+.cardWin {
+  border-color: hsl(145 65% 48%);
+  box-shadow: 0 0 0 1px hsl(145 65% 48% / 0.25), 0 4px 16px hsl(145 65% 48% / 0.12);
+}
+
+.cardWin:hover {
+  border-color: hsl(145 65% 58%);
+  box-shadow: 0 0 0 1px hsl(145 65% 58% / 0.35), 0 8px 24px -4px hsl(145 65% 48% / 0.25);
+}
+
+.cardLoss {
+  border-color: hsl(0 75% 55%);
+  box-shadow: 0 0 0 1px hsl(0 75% 55% / 0.25), 0 4px 16px hsl(0 75% 55% / 0.12);
+}
+
+.cardLoss:hover {
+  border-color: hsl(0 75% 65%);
+  box-shadow: 0 0 0 1px hsl(0 75% 65% / 0.35), 0 8px 24px -4px hsl(0 75% 55% / 0.25);
+}
+
+.cardPush {
+  border-color: hsl(215 30% 50%);
+  box-shadow: 0 0 0 1px hsl(215 30% 50% / 0.2), 0 4px 16px hsl(215 30% 50% / 0.1);
+}
+
+/* ── Result badge (top-right corner) ─────────────────────────────────────── */
+
+.resultBadge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  padding: 5px 12px;
+  border-radius: 0 var(--radius-xl) 0 var(--radius-lg);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.badgePending {
+  background: hsl(35 95% 55%);
+  color: hsl(25 100% 10%);
+}
+
+.badgeWin {
+  background: hsl(145 65% 48%);
+  color: hsl(145 60% 8%);
+}
+
+.badgeLoss {
+  background: hsl(0 75% 55%);
+  color: #fff;
+}
+
+.badgePush {
+  background: hsl(215 30% 50%);
+  color: #fff;
+}
+
 
 .header {
   display: flex;
@@ -72,35 +145,83 @@
 
 .matchSection {
   background-color: var(--color-bg-base);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.matchTeams {
+  padding: var(--space-4) var(--space-3);
+  border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.matchTeamSide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 105px;
+}
+
+.teamLogoBox {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.fixtureLogo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logoLetter {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: 0.5px;
+}
+
+.teamName {
+  font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   color: var(--color-text-primary);
+  text-align: center;
+  line-height: 1.25;
+  word-break: break-word;
 }
 
-.team {
-  font-size: var(--text-base);
+.matchCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 0 8px;
 }
 
-.vs {
-  font-size: var(--text-xs);
-  color: var(--color-accent-400);
-  font-weight: var(--font-bold);
-  text-transform: uppercase;
-}
-
-.matchTime {
-  font-size: var(--text-xs);
+.matchDateTime {
+  font-size: 12px;
+  font-weight: var(--font-medium);
   color: var(--color-text-muted);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.matchDash {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1;
+  margin-top: 2px;
 }
 
 .selectionBox {
@@ -149,22 +270,27 @@
 }
 
 .metricsRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  padding: var(--space-3) var(--space-2);
   border-top: 1px solid var(--color-border-soft);
-  border-bottom: 1px solid var(--color-border-soft);
 }
 
 .metric {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  min-width: 80px;
 }
 
 .metricLabel {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
+  text-align: center;
 }
 
 .metricValue {
@@ -173,20 +299,28 @@
   color: var(--color-text-primary);
 }
 
+.probabilityValue {
+  color: hsl(198 100% 60%);
+  font-weight: var(--font-bold);
+  font-size: var(--text-base);
+}
+
 .return {
   color: var(--color-success-400);
 }
 
 .stars {
   color: var(--color-accent-400);
-  font-size: var(--text-xs);
-  letter-spacing: 1px;
+  font-size: var(--text-sm);
+  letter-spacing: 2px;
 }
 
 .analysisContainer {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  border-top: 1px solid var(--color-border-soft);
+  padding-top: var(--space-3);
 }
 
 .analysisToggle {
@@ -210,19 +344,73 @@
   line-height: var(--leading-relaxed);
 }
 
-.footer {
+.analysisContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.analysisMainBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analysisBlockLabel {
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.extraPicksBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.extraPicksList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.extraPickItem {
+  background-color: var(--color-bg-base);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.extraPickHeader {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.detailLink {
+.extraPickBet {
   font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  font-weight: var(--font-medium);
-  transition: color var(--transition-fast);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
-.detailLink:hover {
-  color: var(--color-brand-400);
+.extraPickOdds {
+  font-size: 11px;
+  font-weight: var(--font-bold);
+  color: var(--color-accent-400);
+  background: hsl(198 100% 50% / 0.12);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.extraPickAnalysis {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin: 0;
 }

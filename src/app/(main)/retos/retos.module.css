@@ -1,0 +1,222 @@
+.page {
+  padding-block: var(--space-12);
+  min-height: 80vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-12);
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-brand-400);
+  background: hsl(198 100% 50% / 0.1);
+  border: 1px solid hsl(198 100% 50% / 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.02em;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 60%, #00a2ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-6);
+}
+
+.card {
+  background: hsl(222 30% 11%);
+  border: 1px solid hsl(215 25% 18%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: hsl(198 100% 50% / 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px hsl(198 100% 50% / 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+}
+
+.active {
+  background: hsl(145 70% 25% / 0.35);
+  color: hsl(145 80% 60%);
+  border: 1px solid hsl(145 70% 45% / 0.4);
+}
+
+.new {
+  background: hsl(198 100% 45% / 0.2);
+  color: hsl(198 100% 60%);
+  border: 1px solid hsl(198 100% 50% / 0.4);
+}
+
+.special {
+  background: hsl(280 80% 45% / 0.25);
+  color: hsl(280 90% 70%);
+  border: 1px solid hsl(280 80% 55% / 0.4);
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.cardDesc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-6);
+  flex: 1;
+}
+
+.progressContainer {
+  margin-bottom: var(--space-6);
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.775rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.stepText {
+  color: var(--color-brand-300);
+}
+
+.progressPct {
+  color: var(--color-text-muted);
+}
+
+.progressBar {
+  height: 6px;
+  background: hsl(222 25% 18%);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-brand-400), #00d2ff);
+  border-radius: 9999px;
+  transition: width var(--transition-slow);
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  padding-block: var(--space-3);
+  border-top: 1px solid hsl(215 25% 16%);
+  border-bottom: 1px solid hsl(215 25% 16%);
+  margin-bottom: var(--space-5);
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metaLabel {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.metaValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.metaHighlight {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-brand-400);
+}
+
+.cardActions {
+  margin-top: auto;
+}
+
+.btnFollow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: var(--radius-xl);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: hsl(222 28% 16%);
+  border: 1px solid hsl(215 25% 24%);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.btnFollow:hover {
+  background: linear-gradient(135deg, hsl(198 100% 48%), hsl(208 100% 44%));
+  border-color: hsl(198 100% 50% / 0.5);
+  box-shadow: 0 4px 16px hsl(198 100% 50% / 0.35);
+  transform: translateY(-1px);
+}

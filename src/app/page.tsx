@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { ROUTES } from '@/constants/routes';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import styles from './page.module.css';
@@ -11,36 +13,36 @@ export default function HomePage() {
         <section className={styles.hero}>
           <div className={`container ${styles.heroInner}`}>
             <div className={styles.heroLabel}>
-              <span>⚽ La plataforma definitiva de tipsters</span>
+              <span>⚽ La web definitiva para apostadores</span>
             </div>
             <h1 className={styles.heroTitle}>
-              Tus picks, <br />
-              <span className={styles.heroHighlight}>al siguiente nivel</span>
+              Datos que <br />
+              <span className={styles.heroHighlight}>ganan partidos</span>
             </h1>
             <p className={styles.heroDesc}>
-              Analiza cuotas, publica tus picks, sigue a los mejores tipsters y lleva el
-              control total de tus apuestas deportivas.
+              Una comunidad creada para quienes buscan análisis deportivos de calidad. Descubre nuestras previsiones y el desglose táctico de los eventos más destacados del calendario deportivo.
             </p>
             <div className={styles.heroActions}>
-              <a href="/register" className={styles.btnPrimary}>Empezar gratis</a>
-              <a href="/picks" className={styles.btnSecondary}>Ver picks →</a>
+              <a
+                href="https://t.me/+yRs5E_z6tt81NWE0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.btnPrimary}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                </svg>
+                <span>Canal VIP Telegram</span>
+              </a>
+              <Link href={ROUTES.PICKS} className={styles.btnSecondary}>
+                <span>Apuestas deportivas</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           </div>
-        </section>
-
-        {/* Stats */}
-        <section className={`container ${styles.stats}`}>
-          {[
-            { value: '10K+', label: 'Picks publicados' },
-            { value: '2.3K', label: 'Tipsters activos' },
-            { value: '68%', label: 'Win rate medio' },
-            { value: '+21%', label: 'ROI promedio' },
-          ].map((stat) => (
-            <div key={stat.label} className={styles.statCard}>
-              <span className={styles.statValue}>{stat.value}</span>
-              <span className={styles.statLabel}>{stat.label}</span>
-            </div>
-          ))}
         </section>
       </main>
       <Footer />

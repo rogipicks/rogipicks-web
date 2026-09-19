@@ -6,6 +6,13 @@ import type { User } from './user';
 export type PickResult = 'win' | 'loss' | 'push' | 'pending';
 export type PickConfidence = 1 | 2 | 3 | 4 | 5;
 
+export interface SecondaryPrediction {
+  id?: string;
+  bet: string;          // Apuesta
+  odds: number | string; // Cuota
+  analysis?: string;    // Análisis de la apuesta secundaria
+}
+
 export interface Pick {
   id: string;
   matchId: string;
@@ -17,8 +24,10 @@ export interface Pick {
   stake: number;              // amount wagered
   potentialReturn: number;    // stake * odds
   confidence: PickConfidence; // 1–5 stars
+  probability?: string;       // e.g. "80%"
   result: PickResult;
   analysis?: string;          // optional written analysis
+  extraPredictions?: SecondaryPrediction[]; // otros pronósticos del partido
   isPublic: boolean;
   createdAt: string;
   updatedAt: string;
@@ -31,6 +40,7 @@ export interface PickFormData {
   stake: number;
   confidence: PickConfidence;
   analysis?: string;
+  extraPredictions?: SecondaryPrediction[];
   isPublic: boolean;
 }
 

@@ -1,55 +1,45 @@
 import { NextResponse } from 'next/server';
-import { MOCK_PICKS } from '@/lib/data/mockPicks';
-import type { ApiResponse } from '@/types/api';
+import { getAllPicks, createPick } from '@/lib/db/picksDb';
 import type { Pick } from '@/types/pick';
 
-// GET /api/picks
 export async function GET() {
-  const response: ApiResponse<Pick[]> = {
-    data: MOCK_PICKS,
-    success: true,
-    message: 'Picks recuperados correctamente',
-  };
-  return NextResponse.json(response);
+  try {
+    const picks = await getAllPicks();
+    return NextResponse.json({ success: true, data: picks });
+  } catch (error) {
+    console.error('Error in GET /api/picks:', error);
+    return NextResponse.json(
+      { success: false, error: 'Error al obtener los pronósticos' },
+      { status: 500 }
+    );
+  }
 }
 
-// POST /api/picks
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
-    // Validate minimal fields
-    if (!body.selection || !body.odds) {
+
+    // Validación básica
+    if (!body.selection || !body.odds || !body.match) {
       return NextResponse.json(
-        { data: null, success: false, message: 'Faltan campos requeridos: selection u odds' },
+        { success: false, error: 'Datos incompletos para crear el pronóstico' },
         { status: 400 }
       );
     }
 
     const newPick: Pick = {
-      id: `pick-${Date.now()}`,
-      matchId: body.matchId || 'custom-match',
-      userId: 'u-current',
-      selection: body.selection,
-      odds: Number(body.odds),
-      stake: Number(body.stake) || 1,
-      potentialReturn: Number(body.odds) * (Number(body.stake) || 1),
-      confidence: body.confidence || 3,
-      result: 'pending',
-      analysis: body.analysis || '',
-      isPublic: true,
-      createdAt: new Date().toISOString(),
+      ...body,
+      id: body.id || `pick-${Date.now()}`,
+      createdAt: body.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    return NextResponse.json({
-      data: newPick,
-      success: true,
-      message: 'Pick creado correctamente',
-    }, { status: 201 });
+    const created = await createPick(newPick);
+    return NextResponse.json({ success: true, data: created }, { status: 201 });
   } catch (error) {
+    console.error('Error in POST /api/picks:', error);
     return NextResponse.json(
-      { data: null, success: false, message: 'Error al procesar el pick' },
+      { success: false, error: 'Error al guardar el pronóstico' },
       { status: 500 }
     );
   }

@@ -5,6 +5,7 @@ export const APP_CONFIG = {
   description: 'La plataforma de picks deportivos más completa',
   url: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   version: '1.0.0',
+  telegramUrl: process.env.NEXT_PUBLIC_TELEGRAM_URL ?? 'https://t.me/rogipicks',
 } as const;
 
 export const PAGINATION = {

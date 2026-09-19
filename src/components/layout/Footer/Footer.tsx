@@ -31,9 +31,9 @@ export function Footer() {
 
         {/* Centered navigation links */}
         <nav className={styles.linksRow} aria-label="Navegación del footer">
-          <Link href={ROUTES.PICKS} className={styles.link}>Picks</Link>
-          <Link href={ROUTES.LEADERBOARD} className={styles.link}>Ranking</Link>
-          <Link href={ROUTES.DASHBOARD} className={styles.link}>Dashboard</Link>
+          <Link href={ROUTES.PICKS} className={styles.link}>Pronósticos</Link>
+          <Link href={ROUTES.BOOKMAKERS} className={styles.link}>Casas de apuestas</Link>
+          <Link href={ROUTES.TELEGRAM} className={styles.link}>Telegram</Link>
           <span className={styles.dot}>•</span>
           <Link href={ROUTES.LOGIN} className={styles.link}>Entrar</Link>
           <Link href={ROUTES.REGISTER} className={styles.link}>Registrarse</Link>

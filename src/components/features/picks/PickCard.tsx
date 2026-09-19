@@ -1,73 +1,135 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
+import { useRouter } from 'next/navigation';
 import type { Pick } from '@/types/pick';
-import { Badge } from '@/components/ui/Badge/Badge';
-import { formatOdds, formatCurrency, formatDate } from '@/lib/utils/formatters';
+import { formatOdds } from '@/lib/utils/formatters';
 import styles from './PickCard.module.css';
 
 interface PickCardProps {
   pick: Pick;
 }
 
+function formatMatchDateTime(dateStr?: string): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
+  } catch {
+    return '';
+  }
+}
+
 export const PickCard: React.FC<PickCardProps> = ({ pick }) => {
-  const [showAnalysis, setShowAnalysis] = useState(false);
-
-  const getResultBadge = () => {
-    switch (pick.result) {
-      case 'win':
-        return <Badge variant="success">✅ Acertada</Badge>;
-      case 'loss':
-        return <Badge variant="danger">❌ Fallada</Badge>;
-      case 'push':
-        return <Badge variant="warning">⚪ Nula</Badge>;
-      case 'pending':
-      default:
-        return <Badge variant="primary">⏳ Pendiente</Badge>;
-    }
-  };
-
-  const sportName = pick.match?.sport.name || 'Deporte';
+  const router = useRouter();
   const homeTeam = pick.match?.homeTeam.name || 'Local';
   const awayTeam = pick.match?.awayTeam.name || 'Visitante';
 
-  return (
-    <div className={styles.card}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.author}>
-          <div className={styles.avatar}>
-            {pick.user?.username?.substring(0, 2).toUpperCase() || 'TP'}
-          </div>
-          <div>
-            <span className={styles.username}>@{pick.user?.username || 'tipster'}</span>
-            <span className={styles.date}>{formatDate(pick.createdAt)}</span>
-          </div>
-        </div>
-        <div className={styles.metaBadge}>
-          <span className={styles.sportTag}>{sportName}</span>
-          {getResultBadge()}
-        </div>
-      </div>
+  const resultCardClass = {
+    pending: styles.cardPending,
+    win: styles.cardWin,
+    loss: styles.cardLoss,
+    push: styles.cardPush,
+  }[pick.result] ?? styles.cardPending;
 
+  const resultBadge = {
+    pending: { cls: styles.badgePending, label: '⏳ Pendiente' },
+    win: { cls: styles.badgeWin, label: '✅ Ganado' },
+    loss: { cls: styles.badgeLoss, label: '❌ Perdido' },
+    push: { cls: styles.badgePush, label: '⚪ Nulo' },
+  }[pick.result] ?? { cls: styles.badgePending, label: '⏳ Pendiente' };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('a')) return;
+    if (e.metaKey || e.ctrlKey) {
+      window.open(`/picks/${pick.id}`, '_blank');
+      return;
+    }
+    router.push(`/picks/${pick.id}`);
+  };
+
+  const handleAuxClick = (e: React.MouseEvent) => {
+    if (e.button === 1) {
+      const target = e.target as HTMLElement;
+      if (target.closest('button') || target.closest('a')) return;
+      window.open(`/picks/${pick.id}`, '_blank');
+    }
+  };
+
+  return (
+    <div
+      className={`${styles.card} ${resultCardClass}`}
+      onClick={handleCardClick}
+      onAuxClick={handleAuxClick}
+      role="link"
+      tabIndex={0}
+      title="Ver detalles del pick"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          router.push(`/picks/${pick.id}`);
+        }
+      }}
+    >
+      {/* Result badge */}
+      <span className={`${styles.resultBadge} ${resultBadge.cls}`}>
+        {resultBadge.label}
+      </span>
       {/* Match info */}
       <div className={styles.matchSection}>
-        <div className={styles.matchTeams}>
-          <span className={styles.team}>{homeTeam}</span>
-          <span className={styles.vs}>vs</span>
-          <span className={styles.team}>{awayTeam}</span>
+        {/* Home team */}
+        <div className={styles.matchTeamSide}>
+          <div className={styles.teamLogoBox}>
+            {pick.match?.homeTeam.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={pick.match.homeTeam.logoUrl}
+                alt={homeTeam}
+                className={styles.fixtureLogo}
+              />
+            ) : (
+              <span className={styles.logoLetter}>
+                {homeTeam.slice(0, 3).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <span className={styles.teamName}>{homeTeam}</span>
         </div>
-        {pick.match?.startTime && (
-          <span className={styles.matchTime}>
-            📅 {new Date(pick.match.startTime).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: 'short',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </span>
-        )}
+
+        {/* Center: Date/Time and Dash */}
+        <div className={styles.matchCenter}>
+          {pick.match?.startTime && (
+            <span className={styles.matchDateTime}>
+              {formatMatchDateTime(pick.match.startTime)}
+            </span>
+          )}
+          <span className={styles.matchDash}>-</span>
+        </div>
+
+        {/* Away team */}
+        <div className={styles.matchTeamSide}>
+          <div className={styles.teamLogoBox}>
+            {pick.match?.awayTeam.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={pick.match.awayTeam.logoUrl}
+                alt={awayTeam}
+                className={styles.fixtureLogo}
+              />
+            ) : (
+              <span className={styles.logoLetter}>
+                {awayTeam.slice(0, 3).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <span className={styles.teamName}>{awayTeam}</span>
+        </div>
       </div>
 
       {/* Prediction Selection */}
@@ -82,16 +144,14 @@ export const PickCard: React.FC<PickCardProps> = ({ pick }) => {
         </div>
       </div>
 
-      {/* Metrics (Stake, Return, Confidence) */}
+      {/* Metrics (Probabilidad y Confianza) */}
       <div className={styles.metricsRow}>
         <div className={styles.metric}>
-          <span className={styles.metricLabel}>Stake</span>
-          <span className={styles.metricValue}>{pick.stake} / 10u</span>
-        </div>
-        <div className={styles.metric}>
-          <span className={styles.metricLabel}>Retorno Est.</span>
-          <span className={`${styles.metricValue} ${styles.return}`}>
-            {formatCurrency(pick.potentialReturn, 'EUR')}
+          <span className={styles.metricLabel}>Probabilidad</span>
+          <span className={`${styles.metricValue} ${styles.probabilityValue}`}>
+            {pick.probability
+              ? (pick.probability.toString().endsWith('%') ? pick.probability : `${pick.probability}%`)
+              : (pick.odds ? `${Math.round(100 / pick.odds)}%` : '—')}
           </span>
         </div>
         <div className={styles.metric}>
@@ -101,29 +161,6 @@ export const PickCard: React.FC<PickCardProps> = ({ pick }) => {
             {'☆'.repeat(5 - pick.confidence)}
           </span>
         </div>
-      </div>
-
-      {/* Analysis Accordion */}
-      {pick.analysis && (
-        <div className={styles.analysisContainer}>
-          <button
-            type="button"
-            className={styles.analysisToggle}
-            onClick={() => setShowAnalysis(!showAnalysis)}
-          >
-            {showAnalysis ? 'Ocultar análisis ▴' : 'Ver análisis del Tipster ▾'}
-          </button>
-          {showAnalysis && (
-            <p className={styles.analysisText}>{pick.analysis}</p>
-          )}
-        </div>
-      )}
-
-      {/* Footer link */}
-      <div className={styles.footer}>
-        <Link href={`/picks/${pick.id}`} className={styles.detailLink}>
-          Detalles del pick →
-        </Link>
       </div>
     </div>
   );
