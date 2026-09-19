@@ -95,7 +95,7 @@ export function Navbar() {
         <nav className={styles.navContainer} aria-label="Navegación principal">
           <div className={styles.navPill}>
             {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`));
+              const isActive = pathname === item.href || ((item.href as string) !== '/' && pathname.startsWith(`${item.href}/`));
               return (
                 <Link
                   key={item.href}

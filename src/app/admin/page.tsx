@@ -271,18 +271,21 @@ export default function AdminPage() {
 
     if (editingId) {
       // Update existing
+      const existingPick = picks.find((p) => p.id === editingId);
+      const matchId = existingPick?.match?.id || existingPick?.matchId || `m-${Date.now()}`;
       const partial = {
         match: {
+          id: matchId,
           sport: { id: `s-${activeSport}`, name: sportData.name, category: activeSport as any },
           homeTeam: {
-            id: `t-h-${Date.now()}`,
+            id: existingPick?.match?.homeTeam?.id || `t-h-${Date.now()}`,
             name: form.homeTeam,
             shortName: form.homeTeam.slice(0, 3).toUpperCase(),
             sportId: `s-${activeSport}`,
             logoUrl: form.homeLogo || undefined,
           },
           awayTeam: {
-            id: `t-a-${Date.now()}`,
+            id: existingPick?.match?.awayTeam?.id || `t-a-${Date.now()}`,
             name: form.awayTeam,
             shortName: form.awayTeam.slice(0, 3).toUpperCase(),
             sportId: `s-${activeSport}`,
@@ -313,7 +316,7 @@ export default function AdminPage() {
         console.error('Error updating pick in API:', err);
       }
 
-      const updated = picks.map((p) => {
+      const updated: Pick[] = picks.map((p) => {
         if (p.id !== editingId) return p;
         return {
           ...p,

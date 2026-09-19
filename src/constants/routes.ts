@@ -16,6 +16,7 @@ export const ROUTES = {
   TELEGRAM: '/telegram',
   PROFILE: '/profile',
   PROFILE_USER: (username: string) => `/profile/${username}`,
+  ADMIN: '/admin',
 } as const;
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];

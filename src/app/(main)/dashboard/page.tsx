@@ -4,70 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { MOCK_PICKS } from '@/lib/data/mockPicks';
 import { PickCard } from '@/components/features/picks/PickCard';
-import { Modal } from '@/components/ui/Modal/Modal';
-import { PickForm, type NewPickFormData } from '@/components/features/picks/PickForm';
 import { ROUTES } from '@/constants/routes';
 import type { Pick } from '@/types/pick';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
-  const [picks, setPicks] = useState<Pick[]>(MOCK_PICKS);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleCreatePick = (data: NewPickFormData) => {
-    const newPick: Pick = {
-      id: `pick-${Date.now()}`,
-      matchId: `m-${Date.now()}`,
-      userId: 'u-1',
-      user: {
-        id: 'u-1',
-        username: 'TuUsuario',
-        email: 'user@rogipicks.com',
-        role: 'tipster',
-        createdAt: new Date().toISOString(),
-      },
-      match: {
-        id: `m-${Date.now()}`,
-        sport: {
-          id: `s-${data.sportCategory}`,
-          name: data.sportCategory.toUpperCase(),
-          category: data.sportCategory as any,
-        },
-        homeTeam: {
-          id: 't-h',
-          name: data.matchTeams.split('vs')[0]?.trim() || data.matchTeams,
-          shortName: 'LOC',
-          sportId: `s-${data.sportCategory}`,
-        },
-        awayTeam: {
-          id: 't-a',
-          name: data.matchTeams.split('vs')[1]?.trim() || 'Rival',
-          shortName: 'VIS',
-          sportId: `s-${data.sportCategory}`,
-        },
-        startTime: new Date(Date.now() + 86400000).toISOString(),
-        status: 'scheduled',
-        odds: {
-          homeWin: data.odds,
-          awayWin: 2.1,
-          updatedAt: new Date().toISOString(),
-        },
-      },
-      selection: data.selection,
-      odds: data.odds,
-      stake: data.stake,
-      potentialReturn: Number((data.stake * data.odds).toFixed(2)),
-      confidence: data.confidence,
-      result: 'pending',
-      analysis: data.analysis,
-      isPublic: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    setPicks([newPick, ...picks]);
-    setIsModalOpen(false);
-  };
+  const [picks] = useState<Pick[]>(MOCK_PICKS);
 
   const pendingPicks = picks.filter((p) => p.result === 'pending');
   const finishedPicks = picks.filter((p) => p.result !== 'pending');
@@ -86,13 +28,12 @@ export default function DashboardPage() {
             Seguimiento de rendimiento, rentabilidad y picks activos en tiempo real.
           </p>
         </div>
-        <button
-          type="button"
+        <Link
+          href={ROUTES.ADMIN}
           className={styles.publishBtn}
-          onClick={() => setIsModalOpen(true)}
         >
           + Publicar Pick
-        </button>
+        </Link>
       </div>
 
       {/* KPI Stats Grid */}
@@ -230,18 +171,6 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
-
-      {/* Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Publicar Nuevo Pronóstico 🎯"
-      >
-        <PickForm
-          onSubmit={handleCreatePick}
-          onCancel={() => setIsModalOpen(false)}
-        />
-      </Modal>
     </div>
   );
 }
