@@ -12,9 +12,14 @@ export default function LeaderboardPage() {
     <div className="container" style={{ paddingBlock: 'var(--space-8)' }}>
       <div style={{ marginBottom: 'var(--space-8)' }}>
         <h1 style={{
-          fontSize: 'var(--text-3xl)',
+          fontSize: 'clamp(var(--text-3xl), 5vw, var(--text-5xl))',
           fontWeight: 'var(--font-extrabold)',
-          color: 'var(--color-text-primary)',
+          lineHeight: 'var(--leading-tight)',
+          letterSpacing: '-0.03em',
+          background: 'linear-gradient(135deg, #ffffff 0%, #38bdf8 45%, #00a2ff 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          filter: 'drop-shadow(0 0 18px hsl(198 100% 50% / 0.28))',
           marginBottom: 'var(--space-2)'
         }}>
           Ranking Oficial de Tipsters 🏆

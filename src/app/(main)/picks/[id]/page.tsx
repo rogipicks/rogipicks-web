@@ -66,8 +66,16 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
   const homeTeam = pick.match?.homeTeam.name || 'Local';
   const awayTeam = pick.match?.awayTeam.name || 'Visitante';
 
-  return (
-    <div className="container" style={{ paddingBlock: 'var(--space-8)', maxWidth: '800px' }}>
+    return (
+    <div
+      className={`container ${styles.detailContainer}`}
+      style={{
+        paddingTop: 'var(--space-4)',
+        paddingBottom: 'var(--space-8)',
+        maxWidth: '800px',
+        scrollMarginTop: 'calc(var(--navbar-height) + var(--space-4))',
+      }}
+    >
       <Link
         href={ROUTES.PICKS}
         style={{

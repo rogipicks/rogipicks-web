@@ -9,8 +9,8 @@ interface DatePillProps {
 }
 
 const DAY_NAMES = ['DO', 'LU', 'MA', 'MI', 'JU', 'VI', 'SA'];
-const MIN_DATE = new Date(2026, 8, 19);
-const MIN_DATE_STR = '2026-09-19';
+const MIN_DATE = new Date(2026, 8, 20);
+const MIN_DATE_STR = '2026-09-20';
 
 export const DatePill: React.FC<DatePillProps> = ({ currentDate, onDateChange }) => {
   const day = String(currentDate.getDate()).padStart(2, '0');

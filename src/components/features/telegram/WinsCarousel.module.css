@@ -1,0 +1,343 @@
+/* ── Carrusel de pronósticos ganados ────────────────────────────────────── */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.viewport {
+  position: relative;
+  width: 100%;
+}
+
+/* Carril deslizante: muestra todas las capturas que caben a lo ancho y el
+   resto se desliza (flechas, arrastre con el ratón, dedo o teclado). */
+.scroller {
+  --slide-width: clamp(158px, 46%, 300px);
+
+  display: flex;
+  justify-content: flex-start;
+  justify-content: safe center;
+  align-items: stretch;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(circle at 50% 0%, hsl(198 100% 50% / 0.1) 0%, transparent 65%),
+    linear-gradient(160deg, hsl(222 40% 12%) 0%, hsl(210 45% 9%) 100%);
+  box-shadow: var(--shadow-xl);
+  outline: none;
+  cursor: grab;
+  user-select: none;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller:focus-visible {
+  border-color: hsl(198 100% 50% / 0.55);
+  box-shadow: 0 0 0 3px hsl(198 100% 50% / 0.22), var(--shadow-xl);
+}
+
+/* Mientras se arrastra con el ratón no queremos que el navegador reajuste. */
+.scrollerDragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--slide-width);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: linear-gradient(160deg, hsl(222 40% 14%) 0%, hsl(210 45% 10%) 100%);
+  box-shadow: var(--shadow-md);
+  scroll-snap-align: start;
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.slide:hover {
+  border-color: hsl(198 100% 50% / 0.4);
+  box-shadow: 0 10px 28px hsl(198 100% 50% / 0.12);
+}
+
+.slide:focus-within {
+  border-color: hsl(198 100% 50% / 0.55);
+}
+
+/* Cada captura es un botón que abre el visor ampliado. */
+.slideButton {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.slideButton:focus-visible {
+  outline: 2px solid hsl(198 100% 55%);
+  outline-offset: -3px;
+  border-radius: var(--radius-xl);
+}
+
+/* Lupa de aviso: indica que la captura se puede ampliar. */
+.zoomBadge {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  border: 1px solid hsl(198 100% 50% / 0.3);
+  background: hsl(222 30% 10% / 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--color-brand-200);
+  opacity: 0.8;
+  pointer-events: none;
+  transition:
+    opacity var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.slideButton:hover .zoomBadge,
+.slideButton:focus-visible .zoomBadge {
+  opacity: 1;
+  background: hsl(198 100% 50% / 0.24);
+  color: var(--color-brand-300);
+}
+
+.image {
+  object-fit: contain;
+  box-sizing: border-box;
+  padding: var(--space-1);
+}
+
+/* Contador «4 capturas» en la esquina superior derecha del marco. */
+.counter {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid hsl(198 100% 50% / 0.28);
+  background: hsl(222 30% 10% / 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--color-brand-200);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.04em;
+}
+
+/* Flechas laterales. */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: hsl(222 30% 14% / 0.82);
+  backdrop-filter: blur(6px);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.arrow:hover {
+  background: hsl(198 100% 50% / 0.18);
+  border-color: hsl(198 100% 50% / 0.5);
+  color: var(--color-brand-300);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.arrow:focus-visible {
+  outline: none;
+  border-color: hsl(198 100% 50% / 0.6);
+  box-shadow: 0 0 0 3px hsl(198 100% 50% / 0.25);
+}
+
+/* Extremo alcanzado: la flecha sigue visible pero ya no desliza nada. */
+.arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+  background: hsl(222 30% 14% / 0.6);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  box-shadow: none;
+}
+
+.arrow:disabled:hover {
+  transform: translateY(-50%) scale(1);
+}
+
+.arrowPrev {
+  left: var(--space-3);
+}
+
+.arrowNext {
+  right: var(--space-3);
+}
+
+/* Barra de progreso del tramo visible, bajo el marco. */
+.progress {
+  width: min(100%, 420px);
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: hsl(215 25% 26% / 0.75);
+  overflow: hidden;
+  transition: opacity var(--transition-base);
+}
+
+/* Todas las capturas caben: no hay nada que deslizar. */
+.progressIdle {
+  opacity: 0;
+}
+
+.progressThumb {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, hsl(198 100% 58%), hsl(210 95% 46%));
+  box-shadow: 0 0 10px hsl(198 100% 50% / 0.5);
+  transition:
+    width var(--transition-base),
+    transform var(--transition-base);
+}
+
+/* Estado vacío: la carpeta de capturas aún no tiene fotos. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(circle at 50% 0%, hsl(198 100% 50% / 0.1) 0%, transparent 65%),
+    linear-gradient(160deg, hsl(222 40% 12%) 0%, hsl(210 45% 9%) 100%);
+  box-shadow: var(--shadow-xl);
+}
+
+.emptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: hsl(198 100% 50% / 0.1);
+  border: 1px solid hsl(198 100% 50% / 0.22);
+  color: var(--color-brand-400);
+}
+
+.emptyTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+}
+
+.emptyText {
+  max-width: 30rem;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+.emptyCode {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-brand-300);
+  background: hsl(198 100% 50% / 0.1);
+  border: 1px solid hsl(198 100% 50% / 0.25);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+}
+
+/* En pantallas grandes las capturas son algo más anchas y se ven más a la vez. */
+@media (min-width: 720px) {
+  .scroller {
+    --slide-width: clamp(180px, 26%, 320px);
+  }
+}
+
+@media (max-width: 640px) {
+  .arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .arrowPrev {
+    left: var(--space-2);
+  }
+
+  .arrowNext {
+    right: var(--space-2);
+  }
+
+  .scroller {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .counter {
+    top: var(--space-2);
+    right: var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .progress,
+  .progressThumb {
+    transition: none;
+  }
+
+  .arrow:hover {
+    transform: translateY(-50%);
+  }
+
+  .arrow:disabled:hover {
+    transform: translateY(-50%);
+  }
+}

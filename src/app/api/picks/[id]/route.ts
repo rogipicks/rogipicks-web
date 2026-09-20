@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { updatePick, deletePick } from '@/lib/db/picksDb';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function PUT(
   request: Request,
   context: { params: Promise<{ id: string }> }

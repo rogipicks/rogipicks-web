@@ -135,3 +135,107 @@
   box-shadow: 0 0 16px hsl(198 100% 50% / 0.2);
   transform: translateY(-2px);
 }
+
+/* ─── Últimos picks subidos ─────────────────────────────────────────────────── */
+
+.latest {
+  padding-block: var(--space-12);
+  background: var(--color-bg-base);
+}
+
+.latestInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.latestHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.latestTitle {
+  font-size: clamp(var(--text-2xl), 3vw, var(--text-3xl));
+  font-weight: var(--font-extrabold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.latestAccent {
+  background: linear-gradient(135deg, var(--color-brand-200), var(--color-brand-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.latestLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-brand-300);
+  background: hsl(198 100% 50% / 0.08);
+  border: 1px solid hsl(198 100% 50% / 0.28);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  white-space: nowrap;
+}
+
+.latestLink:hover {
+  color: var(--color-brand-200);
+  background: hsl(198 100% 50% / 0.14);
+  box-shadow: 0 0 14px hsl(198 100% 50% / 0.2);
+}
+
+.latestGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-5);
+}
+
+@media (max-width: 720px) {
+  .latest {
+    padding-block: var(--space-10);
+  }
+
+  .latestGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Últimos retos subidos ─────────────────────────────────────────────────── */
+
+.retos {
+  padding-block: var(--space-12);
+}
+
+.retosInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.retos .latestHeader {
+  gap: var(--space-3);
+}
+
+.retos .latestTitle {
+  font-size: clamp(var(--text-2xl), 3vw, var(--text-3xl));
+  font-weight: var(--font-extrabold);
+  color: var(--color-text-primary);
+    letter-spacing: -0.02em;
+}
+
+.retos .latestAccent {
+  background: linear-gradient(135deg, var(--color-brand-200), var(--color-brand-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

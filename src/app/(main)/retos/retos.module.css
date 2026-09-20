@@ -26,16 +26,20 @@
 }
 
 .title {
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 800;
-  color: var(--color-text-primary);
-  line-height: 1.2;
+  font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+  font-weight: var(--font-extrabold);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 45%, #00a2ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 18px hsl(198 100% 50% / 0.28));
   margin-bottom: var(--space-3);
-  letter-spacing: -0.02em;
 }
 
 .highlight {
-  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 60%, #00a2ff 100%);
+  background: linear-gradient(135deg, #38bdf8 0%, #00a2ff 60%, #0284c7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -48,7 +52,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  /* auto-fill (no auto-fit): las columnas vacías se mantienen, así las tarjetas
+     siempre tienen el mismo tamaño aunque solo haya un reto publicado. */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-6);
 }
 
@@ -71,45 +77,79 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px hsl(198 100% 50% / 0.1);
 }
 
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-4);
-}
+/* ─── Estado del reto al estilo de los picks ────────────────────────────────
+   Badge en la esquina superior derecha + borde de color según el resultado:
+   pendiente = naranja, ganado = verde, perdido = rojo (como PickCard). */
 
-.category {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
+.resultBadge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 2;
+  padding: 5px 12px;
+  border-radius: 0 var(--radius-2xl) 0 var(--radius-lg);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  line-height: 1;
 }
 
-.badge {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 9999px;
-  letter-spacing: 0.03em;
+.badgePending {
+  background: hsl(35 95% 55%);
+  color: hsl(25 100% 10%);
 }
 
-.active {
-  background: hsl(145 70% 25% / 0.35);
-  color: hsl(145 80% 60%);
-  border: 1px solid hsl(145 70% 45% / 0.4);
+.badgeWin {
+  background: hsl(145 65% 48%);
+  color: hsl(145 60% 8%);
 }
 
-.new {
-  background: hsl(198 100% 45% / 0.2);
-  color: hsl(198 100% 60%);
-  border: 1px solid hsl(198 100% 50% / 0.4);
+.badgeLoss {
+  background: hsl(0 75% 55%);
+  color: #fff;
 }
 
-.special {
-  background: hsl(280 80% 45% / 0.25);
-  color: hsl(280 90% 70%);
-  border: 1px solid hsl(280 80% 55% / 0.4);
+/* Borde de la tarjeta según el estado del reto */
+
+.cardPending {
+  border-color: hsl(35 95% 55%);
+  box-shadow: 0 0 0 1px hsl(35 95% 55% / 0.25), 0 4px 16px hsl(35 95% 55% / 0.12);
+}
+
+.cardPending:hover {
+  border-color: hsl(35 95% 65%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px hsl(35 95% 55% / 0.2);
+}
+
+.cardWin {
+  border-color: hsl(145 65% 48%);
+  box-shadow: 0 0 0 1px hsl(145 65% 48% / 0.25), 0 4px 16px hsl(145 65% 48% / 0.12);
+}
+
+.cardWin:hover {
+  border-color: hsl(145 65% 58%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px hsl(145 65% 48% / 0.2);
+}
+
+.cardLoss {
+  border-color: hsl(0 75% 55%);
+  box-shadow: 0 0 0 1px hsl(0 75% 55% / 0.25), 0 4px 16px hsl(0 75% 55% / 0.12);
+}
+
+.cardLoss:hover {
+  border-color: hsl(0 75% 65%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px hsl(0 75% 55% / 0.2);
+}
+
+.cardCover {
+  width: calc(100% + 2 * var(--space-6));
+  max-width: none;
+  margin: calc(-1 * var(--space-6)) calc(-1 * var(--space-6)) var(--space-5);
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
 }
 
 .cardTitle {
@@ -163,7 +203,10 @@
 
 .metaRow {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  position: relative;
+  gap: var(--space-5);
   padding-block: var(--space-3);
   border-top: 1px solid hsl(215 25% 16%);
   border-bottom: 1px solid hsl(215 25% 16%);
@@ -174,22 +217,43 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
+}
+
+.metaItem:first-child {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.metaItem:last-child {
+  align-items: flex-end;
+  text-align: right;
 }
 
 .metaLabel {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   color: var(--color-text-muted);
 }
 
 .metaValue {
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
 .metaHighlight {
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   font-weight: 700;
+  color: var(--color-brand-400);
+}
+
+.metaArrow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
   color: var(--color-brand-400);
 }
 
@@ -219,4 +283,413 @@
   border-color: hsl(198 100% 50% / 0.5);
   box-shadow: 0 4px 16px hsl(198 100% 50% / 0.35);
   transform: translateY(-1px);
+}
+
+/* Variante del botón cuando el reto se sigue en Telegram (interruptor del admin) */
+.btnFollowTelegram {
+  background: linear-gradient(135deg, hsl(198 100% 46%), hsl(208 100% 42%));
+  border-color: hsl(198 100% 50% / 0.5);
+  box-shadow: 0 4px 16px hsl(198 100% 50% / 0.25);
+}
+
+.btnFollowTelegram:hover {
+  background: linear-gradient(135deg, hsl(198 100% 54%), hsl(208 100% 48%));
+  border-color: hsl(198 100% 60% / 0.7);
+  box-shadow: 0 6px 22px hsl(198 100% 50% / 0.45);
+}
+
+.btnFollowIcon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+
+/* ─── Modal del paso actual ───────────────────────────────────────────────── */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(5, 10, 20, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalBox {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: hsl(222 30% 10%);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Borde del modal según el resultado del paso que se está viendo.
+   Mismos colores que las tarjetas de picks: pendiente = naranja,
+   ganado = verde, perdido = rojo. */
+
+.modalBox_pending {
+  border-color: hsl(35 95% 55%);
+  box-shadow: 0 0 0 1px hsl(35 95% 55% / 0.25), 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 30px hsl(35 95% 55% / 0.18);
+}
+
+.modalBox_win {
+  border-color: hsl(145 65% 48%);
+  box-shadow: 0 0 0 1px hsl(145 65% 48% / 0.25), 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 30px hsl(145 65% 48% / 0.18);
+}
+
+.modalBox_loss {
+  border-color: hsl(0 75% 55%);
+  box-shadow: 0 0 0 1px hsl(0 75% 55% / 0.25), 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 30px hsl(0 75% 55% / 0.18);
+}
+
+.modalClose {
+  position: absolute;
+  top: 46px;
+  right: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: 1px solid hsl(215 25% 24%);
+  background: hsl(222 28% 14%);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.modalClose:hover {
+  background: hsl(0 75% 55% / 0.2);
+  border-color: hsl(0 75% 55% / 0.5);
+  color: hsl(0 85% 70%);
+}
+
+
+.modalTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modalStepHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.modalStepNum {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-brand-300);
+}
+
+.modalMatch {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  background: hsl(222 28% 9%);
+  border: 1px solid hsl(215 25% 18%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.modalTeam {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.modalDesc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modalMoney {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: hsl(222 28% 9%);
+  border: 1px solid hsl(215 25% 18%);
+  border-radius: var(--radius-lg);
+}
+
+.modalMoneyArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand-400);
+}
+
+.modalNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid hsl(215 25% 16%);
+}
+
+/* ─── Fecha + apuesta/cuota del paso (estilo PickCard) ────────────────────── */
+
+.modalCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 0 8px;
+}
+
+.modalDateTime {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.modalSelection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: hsl(222 28% 9%);
+  border: 1px solid hsl(215 25% 18%);
+  border-radius: var(--radius-lg);
+}
+
+.modalSelectionInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.modalSelectionLabel {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modalSelectionValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  word-break: break-word;
+}
+
+.modalOdds {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.modalOddsValue {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-accent-400, #38bdf8);
+}
+
+/* ─── Equipos del paso (mismo estilo que PickCard) ────────────────────────── */
+
+.stepLogoBox {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.stepLogo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.stepLogoFallback {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: 0.5px;
+}
+
+.stepTeamName {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  text-align: center;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.modalDash {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* Badge de esquina del paso, igual que en los picks (pendiente/ganado/perdido) */
+.stepResultBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 6px 14px;
+  border-radius: 0 calc(var(--radius-2xl) - 2px) 0 var(--radius-lg);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+}
+
+.stepResult_pending {
+  background: hsl(35 95% 55%);
+  color: hsl(25 100% 10%);
+}
+
+.stepResult_win {
+  background: hsl(145 65% 48%);
+  color: hsl(145 60% 8%);
+}
+
+.stepResult_loss {
+  background: hsl(0 75% 55%);
+  color: #fff;
+}
+
+.stepMoneyItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.stepMoneyLabel {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stepMoneyValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.stepMoneyHighlight {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-brand-400);
+}
+
+.modalNavBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 0.9rem;
+  background: hsl(222 28% 14%);
+  border: 1px solid hsl(215 25% 22%);
+  border-radius: var(--radius-lg);
+  color: var(--color-brand-300);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modalNavBtn:hover {
+  background: hsl(198 100% 50% / 0.12);
+  border-color: hsl(198 100% 50% / 0.4);
+  color: #ffffff;
+}
+
+.modalNavSpacer {
+  width: 92px;
+}
+
+.modalNavDots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modalDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: hsl(215 25% 28%);
+  transition: all var(--transition-fast);
+}
+
+.modalDotDone {
+  background: hsl(145 65% 48%);
+}
+
+.cardTitleLink {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.cardTitleLink:hover {
+  color: var(--color-brand-300);
 }

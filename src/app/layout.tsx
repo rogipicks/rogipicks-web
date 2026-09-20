@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { TelegramFloat } from '@/components/features/telegram/TelegramFloat';
 
 export const metadata: Metadata = {
   title: {
@@ -20,7 +21,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        {children}
+        <TelegramFloat />
+      </body>
     </html>
   );
 }

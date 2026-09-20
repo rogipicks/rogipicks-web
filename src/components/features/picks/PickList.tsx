@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import type { Pick } from '@/types/pick';
 import { PickCard } from './PickCard';
 import { DatePill } from './DatePill';
+import { getLocalPicks, subscribeToPicks, saveLocalPicks } from '@/lib/utils/picksSync';
 import styles from './PickList.module.css';
 
 interface PickListProps {
@@ -33,28 +34,43 @@ export const PickList: React.FC<PickListProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [dbPicks, setDbPicks] = useState<Pick[]>(initialPicks);
 
-  // Fecha seleccionada con DatePill (empieza en 19/09/2026)
-  const [currentDate, setCurrentDate] = useState<Date>(() => new Date(2026, 8, 19));
+  // Fecha seleccionada con DatePill (empieza en 20/09/2026)
+  const [currentDate, setCurrentDate] = useState<Date>(() => new Date(2026, 8, 20));
   const [showAllDates, setShowAllDates] = useState<boolean>(false);
 
-  // Carga picks desde la API / Base de datos
+  // Carga picks desde la API / Base de datos (fuente de verdad: refleja añadidos y borrados)
   const fetchPicks = async () => {
     try {
-      const res = await fetch('/api/picks');
+      const res = await fetch('/api/picks', { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           setDbPicks(json.data);
+          saveLocalPicks(json.data);
           return;
         }
       }
     } catch (err) {
       console.error('Error fetching picks from API:', err);
     }
+    setDbPicks(initialPicks);
   };
 
   useEffect(() => {
+    // Escucha cambios inmediatos desde el Admin (en cualquier pestaña)
+    const unsubscribe = subscribeToPicks((latestPicks) => {
+      setDbPicks(latestPicks);
+    });
+
     fetchPicks();
+
+    const onFocus = () => fetchPicks();
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('focus', onFocus);
+    };
   }, []);
 
   const sports = [

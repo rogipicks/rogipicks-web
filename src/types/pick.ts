@@ -5,6 +5,7 @@ import type { User } from './user';
 
 export type PickResult = 'win' | 'loss' | 'push' | 'pending';
 export type PickConfidence = 1 | 2 | 3 | 4 | 5;
+export type PodiumPosition = 1 | 2 | 3;
 
 export interface SecondaryPrediction {
   id?: string;
@@ -26,6 +27,7 @@ export interface Pick {
   confidence: PickConfidence; // 1–5 stars
   probability?: string;       // e.g. "80%"
   result: PickResult;
+  podium?: PodiumPosition | null; // posición en el podio del día (1º, 2º o 3º); null = sin podio
   analysis?: string;          // optional written analysis
   extraPredictions?: SecondaryPrediction[]; // otros pronósticos del partido
   isPublic: boolean;

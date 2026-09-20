@@ -2,10 +2,20 @@ import { NextResponse } from 'next/server';
 import { getAllPicks, createPick } from '@/lib/db/picksDb';
 import type { Pick } from '@/types/pick';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const picks = await getAllPicks();
-    return NextResponse.json({ success: true, data: picks });
+    return NextResponse.json(
+      { success: true, data: picks },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error in GET /api/picks:', error);
     return NextResponse.json(

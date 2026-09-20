@@ -2,9 +2,40 @@ import Link from 'next/link';
 import { ROUTES } from '@/constants/routes';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
+import { getAllPicks } from '@/lib/db/picksDb';
+import { getAllRetos } from '@/lib/db/retosDb';
+import { WinnersCarousel } from '@/components/features/picks/WinnersCarousel';
+import { BestOfDayPodium } from '@/components/features/picks/BestOfDayPodium';
+import { PickCard } from '@/components/features/picks/PickCard';
+import { LatestRetos } from '@/components/features/retos/LatestRetos';
+import type { Pick } from '@/types/pick';
 import styles from './page.module.css';
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic';
+
+export default async function HomePage() {
+  const allPicks = await getAllPicks();
+  // Últimos picks ganados y públicos: los 10 más recientes (los viejos se descartan)
+  const winners = allPicks
+    .filter((p) => p.result === 'win' && p.isPublic)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 10);
+
+  // Podio: picks marcados como 1º/2º/3º en admin (públicos); gana el más reciente
+  const podiumOfDay = ([1, 2, 3] as const).map((pos) =>
+    allPicks
+      .filter((p) => p.podium === pos && p.isPublic)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] ?? null
+  );
+
+  // Últimos picks subidos: los 5 más recientes públicos
+  const latestPicks = allPicks
+    .filter((p) => p.isPublic)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 5);
+
+  const allRetos = await getAllRetos();
+
   return (
     <>
       <Navbar />
@@ -42,6 +73,56 @@ export default function HomePage() {
                 </svg>
               </Link>
             </div>
+          </div>
+
+          {/* Carrusel de últimos picks ganados (franja inferior del hero) */}
+          <WinnersCarousel picks={winners} />
+        </section>
+
+        {/* Podio: picks marcados como 1º, 2º o 3º en admin (siempre visible) */}
+        <BestOfDayPodium positions={podiumOfDay} />
+
+        {/* Últimos picks subidos (los 5 más recientes) */}
+        {latestPicks.length > 0 && (
+          <section className={styles.latest} aria-label="Últimos picks subidos">
+            <div className={`container ${styles.latestInner}`}>
+              <div className={styles.latestHeader}>
+                <h2 className={styles.latestTitle}>
+                  Últimos <span className={styles.latestAccent}>picks</span>
+                </h2>
+                <Link href={ROUTES.PICKS} className={styles.latestLink}>
+                  Ver todos
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+              <div className={styles.latestGrid}>
+                {latestPicks.map((pick) => (
+                  <PickCard key={pick.id} pick={pick} />
+                ))}
+              </div>
+            </div>
+          </section>
+                )}
+
+        {/* Últimos retos subidos (3 más recientes) */}
+        <section className={styles.retos} aria-label="Últimos retos subidos">
+          <div className={`container ${styles.retosInner}`}>
+            <div className={styles.latestHeader}>
+              <h2 className={styles.latestTitle}>
+                Últimos <span className={styles.latestAccent}>retos</span>
+              </h2>
+              <Link href={ROUTES.RETOS} className={styles.latestLink}>
+                Ver todos
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+            <LatestRetos retos={allRetos} />
           </div>
         </section>
       </main>

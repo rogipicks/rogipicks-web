@@ -1,15 +1,44 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MOCK_PICKS } from '@/lib/data/mockPicks';
 import { PickCard } from '@/components/features/picks/PickCard';
 import { ROUTES } from '@/constants/routes';
 import type { Pick } from '@/types/pick';
+import { getLocalPicks, subscribeToPicks, saveLocalPicks } from '@/lib/utils/picksSync';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
-  const [picks] = useState<Pick[]>(MOCK_PICKS);
+  const [picks, setPicks] = useState<Pick[]>(() => {
+    if (typeof window !== 'undefined') {
+      const local = getLocalPicks();
+      if (local && local.length > 0) return local;
+    }
+    return MOCK_PICKS;
+  });
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPicks((latest) => {
+      setPicks(latest);
+    });
+
+    const fetchPicks = async () => {
+      try {
+        const res = await fetch('/api/picks', { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            setPicks(json.data);
+            saveLocalPicks(json.data);
+          }
+        }
+      } catch {}
+    };
+
+    fetchPicks();
+    return unsubscribe;
+  }, []);
 
   const pendingPicks = picks.filter((p) => p.result === 'pending');
   const finishedPicks = picks.filter((p) => p.result !== 'pending');

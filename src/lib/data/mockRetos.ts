@@ -1,0 +1,43 @@
+import type { Reto } from '@/types/reto';
+
+export const MOCK_RETOS: Reto[] = [
+  {
+    id: 'reto-escalera',
+    title: 'Reto Escalera: 10€ ➔ 500€',
+    badge: 'En Progreso',
+    badgeType: 'active',
+    desc: 'Escalera de apuestas a cuota segura paso a paso. Publicamos cada pick antes del inicio del evento.',
+    currentStep: 'Paso 4 de 7',
+    progress: 57,
+    stake: '10€',
+    currentBank: '84.50€',
+    category: 'Fútbol Europeo',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'reto-fin-semana',
+    title: 'Desafío Combinada Cuota 10.00',
+    badge: 'Nuevo',
+    badgeType: 'new',
+    desc: 'Selección de 4 partidos analizados estadísticamente para el sábado y domingo.',
+    currentStep: 'Inicia este Sábado',
+    progress: 15,
+    stake: 'Stake 1 (Controlado)',
+    currentBank: 'Cuota: 10.45',
+    category: 'Multideporte',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'reto-nba',
+    title: 'Reto NBA 5/5 Player Props',
+    badge: 'Especial',
+    badgeType: 'special',
+    desc: '5 jornadas consecutivas acertando pronósticos individuales de jugadores de la NBA.',
+    currentStep: 'Paso 2 de 5',
+    progress: 40,
+    stake: 'Stake 2',
+    currentBank: 'Acierto 100%',
+    category: 'Baloncesto NBA',
+    createdAt: new Date().toISOString(),
+  },
+];

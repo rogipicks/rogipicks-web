@@ -1,5 +1,8 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import type { PickResult } from '@/types/pick';
+import { getLocalPicks, subscribeToPicks } from '@/lib/utils/picksSync';
 
 const RESULT_META: Record<string, {
   borderColor: string;
@@ -45,8 +48,27 @@ interface PickDetailCardProps {
   children: React.ReactNode;
 }
 
-export function PickDetailCard({ result, initialResult, children }: PickDetailCardProps) {
-  const currentResult = result ?? initialResult ?? 'pending';
+export function PickDetailCard({ pickId, result, initialResult, children }: PickDetailCardProps) {
+  const [currentResult, setCurrentResult] = useState<PickResult>(() => {
+    if (pickId && typeof window !== 'undefined') {
+      const local = getLocalPicks();
+      const match = local.find((p) => p.id === pickId);
+      if (match?.result) return match.result;
+    }
+    return result ?? initialResult ?? 'pending';
+  });
+
+  useEffect(() => {
+    if (!pickId) return;
+    const unsubscribe = subscribeToPicks((latestPicks) => {
+      const match = latestPicks.find((p) => p.id === pickId);
+      if (match?.result) {
+        setCurrentResult(match.result);
+      }
+    });
+    return unsubscribe;
+  }, [pickId]);
+
   const meta = RESULT_META[currentResult] ?? RESULT_META['pending'];
 
   return (
