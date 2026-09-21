@@ -6,6 +6,7 @@ import type { Reto, RetoBadgeType, RetoStep, RetoStepResult } from '@/types/reto
 import { getLocalPicks, saveLocalPicks, subscribeToPicks } from '@/lib/utils/picksSync';
 import { getLocalRetos, saveLocalRetos, subscribeToRetos } from '@/lib/utils/retosSync';
 import { DatePill } from '@/components/features/picks/DatePill';
+import { useDayDate } from '@/hooks/useDayDate';
 import styles from './admin.module.css';
 
 const ADMIN_PASSWORD = '1234';
@@ -227,7 +228,8 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'add' | 'list' | 'add-reto' | 'list-retos'>('add');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draggingField, setDraggingField] = useState<DragKey | null>(null);
-  const [adminDate, setAdminDate] = useState<Date>(() => new Date(2026, 8, 20));
+  // Fecha del admin: empieza en el día actual y avanza sola a las 00:00
+  const [adminDate, setAdminDate] = useDayDate();
   const [showAllDates, setShowAllDates] = useState(false);
 
   const adminDateStr = `${adminDate.getFullYear()}-${String(adminDate.getMonth() + 1).padStart(2, '0')}-${String(adminDate.getDate()).padStart(2, '0')}`;

@@ -5,6 +5,7 @@ import type { Pick } from '@/types/pick';
 import { PickCard } from './PickCard';
 import { DatePill } from './DatePill';
 import { getLocalPicks, subscribeToPicks, saveLocalPicks } from '@/lib/utils/picksSync';
+import { useDayDate } from '@/hooks/useDayDate';
 import styles from './PickList.module.css';
 
 interface PickListProps {
@@ -34,8 +35,8 @@ export const PickList: React.FC<PickListProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [dbPicks, setDbPicks] = useState<Pick[]>(initialPicks);
 
-  // Fecha seleccionada con DatePill (empieza en 20/09/2026)
-  const [currentDate, setCurrentDate] = useState<Date>(() => new Date(2026, 8, 20));
+  // Fecha seleccionada con DatePill: empieza en el día actual y avanza sola a las 00:00
+  const [currentDate, setCurrentDate] = useDayDate();
   const [showAllDates, setShowAllDates] = useState<boolean>(false);
 
   // Carga picks desde la API / Base de datos (fuente de verdad: refleja añadidos y borrados)

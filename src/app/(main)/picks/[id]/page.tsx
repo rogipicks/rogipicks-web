@@ -7,6 +7,7 @@ import { formatOdds } from '@/lib/utils/formatters';
 import { ROUTES } from '@/constants/routes';
 import styles from './pickDetail.module.css';
 import { PickDetailCard } from './PickDetailCard';
+import { ChannelCard } from '@/components/features/telegram/ChannelCard';
 
 interface PickDetailPageProps {
   params: Promise<{ id: string }>;
@@ -262,6 +263,11 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
           </div>
         )}
       </PickDetailCard>
+
+      {/* Bloque del canal de Telegram, justo debajo del pick */}
+      <div style={{ marginTop: 'var(--space-8)' }}>
+        <ChannelCard />
+      </div>
     </div>
   );
 }

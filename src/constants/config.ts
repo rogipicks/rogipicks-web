@@ -5,7 +5,15 @@ export const APP_CONFIG = {
   description: 'La plataforma de picks deportivos más completa',
   url: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   version: '1.0.0',
-  telegramUrl: process.env.NEXT_PUBLIC_TELEGRAM_URL ?? 'https://t.me/rogipicks',
+  telegramUrl: process.env.NEXT_PUBLIC_TELEGRAM_URL ?? 'https://t.me/+yRs5E_z6tt81NWE0',
+
+  // Redes sociales (se muestran en la franja de redes del footer)
+  tiktokUrl: process.env.NEXT_PUBLIC_TIKTOK_URL ?? 'https://www.tiktok.com/@rogipicks_',
+  twitterUrl: process.env.NEXT_PUBLIC_TWITTER_URL ?? 'https://x.com/RogiPicks_',
+  instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? 'https://www.instagram.com/rogipicks',
+
+  // Contacto legal (protección de datos / aviso legal)
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? 'rogipicks@gmail.com',
 } as const;
 
 export const PAGINATION = {

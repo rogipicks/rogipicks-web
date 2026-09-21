@@ -1,0 +1,332 @@
+/* ─── Formulario de contacto ───────────────────────────────────────────────── */
+
+.form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-8);
+  background:
+    radial-gradient(120% 100% at 0% 0%, hsl(198 100% 50% / 0.08) 0%, transparent 55%),
+    hsl(222 32% 10% / 0.85);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.counter {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.counterOver {
+  color: var(--color-danger-400);
+}
+
+/* ─── Campos ──────────────────────────────────────────────────────────────── */
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.75rem var(--space-4);
+  background: hsl(222 38% 6% / 0.75);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: hsl(215 25% 28%);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  background: hsl(222 38% 8% / 0.9);
+  border-color: var(--color-brand-400);
+  box-shadow: 0 0 0 4px hsl(198 100% 50% / 0.16);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 9rem;
+  line-height: var(--leading-relaxed);
+}
+
+/* Select con flecha propia para que combine con el resto del sitio */
+.select {
+  appearance: none;
+  padding-right: var(--space-10);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a9bb5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  cursor: pointer;
+}
+
+.select option {
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+.inputError {
+  border-color: var(--color-danger-500);
+  box-shadow: 0 0 0 4px hsl(0 75% 50% / 0.14);
+}
+
+/* ─── Consentimiento (RGPD) ───────────────────────────────────────────────── */
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  background: hsl(222 38% 6% / 0.5);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.consent:hover {
+  border-color: var(--color-border);
+}
+
+.consentError {
+  border-color: var(--color-danger-500);
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--color-brand-500);
+  cursor: pointer;
+}
+
+.consentLink {
+  color: var(--color-brand-300);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.consentLink:hover {
+  color: var(--color-brand-200);
+}
+
+/* ─── Honeypot: fuera de la vista, pero presente en el HTML ───────────────── */
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ─── Botón de envío ──────────────────────────────────────────────────────── */
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.9rem var(--space-6);
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  color: #ffffff;
+  background: linear-gradient(135deg, hsl(198 100% 50%), hsl(208 100% 45%));
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 30px hsl(198 100% 50% / 0.34);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast);
+}
+
+.submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px hsl(198 100% 50% / 0.46);
+}
+
+.submit:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.6);
+  opacity: 0.75;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid hsl(0 0% 100% / 0.35);
+  border-top-color: #ffffff;
+  border-radius: var(--radius-full);
+  animation: contactSpin 0.7s linear infinite;
+}
+
+@keyframes contactSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.note {
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ─── Aviso de error ──────────────────────────────────────────────────────── */
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: hsl(0 90% 88%);
+  background: var(--color-danger-bg);
+  border: 1px solid hsl(0 75% 50% / 0.45);
+  border-radius: var(--radius-lg);
+  animation: fadeInDown 0.25s both;
+}
+
+.errorBanner svg {
+  flex-shrink: 0;
+}
+
+/* ─── Confirmación de envío ───────────────────────────────────────────────── */
+
+.successCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-8);
+  text-align: center;
+  background:
+    radial-gradient(120% 100% at 50% 0%, hsl(145 60% 20% / 0.35) 0%, transparent 60%),
+    hsl(222 32% 10% / 0.85);
+  border: 1px solid hsl(145 60% 40% / 0.4);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  animation: fadeInUp 0.3s both;
+}
+
+.successIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  color: var(--color-success-400);
+  background: hsl(145 60% 30% / 0.25);
+  border: 1px solid hsl(145 60% 45% / 0.5);
+  border-radius: var(--radius-full);
+}
+
+.successTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-extrabold);
+  letter-spacing: -0.02em;
+}
+
+.successText {
+  max-width: 34rem;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+.secondaryButton {
+  margin-top: var(--space-2);
+  padding: 0.7rem var(--space-5);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-brand-300);
+  background: hsl(198 100% 50% / 0.1);
+  border: 1px solid hsl(198 100% 50% / 0.35);
+  border-radius: var(--radius-lg);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.secondaryButton:hover {
+  background: hsl(198 100% 50% / 0.18);
+  border-color: var(--color-brand-400);
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .form {
+    padding: var(--space-5);
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+
+  .submit:hover:not(:disabled) {
+    transform: none;
+  }
+}

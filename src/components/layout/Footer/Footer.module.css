@@ -1,110 +1,251 @@
+/* ─── Footer ────────────────────────────────────────────────────────────────
+ * Marca (logo.png) + accesos al contenido + CTA al canal de Telegram + franja
+ * legal. Reutiliza el lenguaje visual del resto del sitio: fondo oscuro,
+ * halos cianes, degradados de marca y bordes suaves.
+ */
+
 .footer {
-  background: var(--color-bg-surface);
-  border-top: 1px solid var(--color-border-soft);
-  margin-top: auto;
   position: relative;
   overflow: hidden;
+  margin-top: auto;
+  background:
+    radial-gradient(70% 120% at 50% 0%, hsl(198 100% 50% / 0.07) 0%, transparent 60%),
+    var(--color-bg-surface);
+  border-top: 1px solid var(--color-border-soft);
 }
 
-/* Subtle top glow in footer */
+/* Línea luminosa superior, como el resto de cortes entre secciones */
 .footer::before {
   content: '';
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 500px;
+  width: min(720px, 80%);
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--color-brand-400), transparent);
-  opacity: 0.6;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* Halos decorativos */
+.glowTop {
+  position: absolute;
+  top: -160px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 620px;
+  height: 320px;
+  background: radial-gradient(ellipse, hsl(198 100% 50% / 0.16) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.glowSide {
+  position: absolute;
+  right: -140px;
+  bottom: -180px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, hsl(198 100% 50% / 0.12) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2.4fr);
+  gap: var(--space-10) var(--space-16);
   max-width: var(--content-max-width);
   margin-inline: auto;
   padding: var(--space-12) var(--space-6) var(--space-8);
-  gap: var(--space-8);
 }
 
-/* ─── Centered Brand & Logo ───────────────────────────────────────────────── */
+/* ─── Marca y llamada a la acción ────────────────────────────────────────── */
 
-.brandCenter {
+.brand {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-4);
-  max-width: 480px;
+  max-width: 30rem;
 }
 
 .logoLink {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
+  display: inline-flex;
   text-decoration: none;
-  transition: transform var(--transition-base);
 }
 
-.logoLink:hover {
-  transform: translateY(-2px);
-}
-
-.logoBadge {
-  width: 96px;
-  height: 96px;
-  border-radius: var(--radius-2xl);
-  overflow: hidden;
-  border: 2px solid hsl(198 100% 50% / 0.4);
-  box-shadow: 0 0 25px hsl(198 100% 50% / 0.25), 0 8px 24px rgba(0, 0, 0, 0.5);
-  background: hsl(222 38% 6%);
-  transition: box-shadow var(--transition-base), border-color var(--transition-base);
-}
-
-.logoLink:hover .logoBadge {
-  border-color: var(--color-brand-400);
-  box-shadow: 0 0 35px hsl(198 100% 50% / 0.45), 0 12px 30px rgba(0, 0, 0, 0.6);
-}
-
-.logoImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.logo {
+  width: auto;
+  height: 58px;
+  object-fit: contain;
   display: block;
+  filter: drop-shadow(0 6px 18px hsl(198 100% 50% / 0.25));
+  transition: transform var(--transition-base), filter var(--transition-base);
 }
 
-.logoText {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-extrabold);
-  letter-spacing: 0.05em;
-  color: var(--color-text-primary);
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.logoText strong {
-  color: var(--color-brand-400);
-  text-shadow: 0 0 15px hsl(198 100% 50% / 0.4);
+.logoLink:hover .logo {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 10px 26px hsl(198 100% 50% / 0.45));
 }
 
 .tagline {
   font-size: var(--text-sm);
-  color: var(--color-text-muted);
   line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
 }
 
-/* ─── Centered Navigation Links ──────────────────────────────────────────── */
-
-.linksRow {
+.chips {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.chip {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  background: hsl(222 32% 10% / 0.7);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 5px var(--space-3);
+  white-space: nowrap;
+}
+
+.chipFree {
+  color: var(--color-success-400);
+  background: var(--color-success-bg);
+  border-color: hsl(145 65% 45% / 0.35);
+  font-weight: var(--font-semibold);
+}
+
+.cta {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--color-brand-400), var(--color-brand-600));
+  border: 1px solid hsl(198 100% 55% / 0.45);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-6);
+  box-shadow: 0 4px 20px hsl(198 100% 50% / 0.4);
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-500));
+  box-shadow: 0 8px 28px hsl(198 100% 50% / 0.55), 0 0 32px hsl(198 100% 50% / 0.35);
+}
+
+.ctaNote {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* ─── Enlaces por columnas ───────────────────────────────────────────────── */
+
+.navWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--space-8) var(--space-6);
+  align-items: start;
+}
+
+/* ─── Redes sociales: una fila de logos, sin nombre ni usuario ───────────── */
+
+.socialBlock {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.socials {
+  display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4) var(--space-6);
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.social {
+  --social-accent: var(--color-brand-400);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  text-decoration: none;
+  background: hsl(222 32% 10% / 0.72);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.social:hover {
+  transform: translateY(-3px);
+  background: hsl(222 32% 13% / 0.9);
+  border-color: var(--social-accent);
+  box-shadow:
+    0 10px 26px hsl(0 0% 0% / 0.35),
+    0 0 0 1px var(--social-accent);
+}
+
+.socialTiktok {
+  --social-accent: hsl(348 100% 58%);
+}
+
+.socialTwitter {
+  --social-accent: hsl(203 89% 53%);
+}
+
+.socialInstagram {
+  --social-accent: hsl(330 80% 58%);
+}
+
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--social-accent);
+  transition: transform var(--transition-fast);
+}
+
+.social:hover .socialIcon {
+  transform: scale(1.12);
+  color: var(--social-accent);
+  filter: drop-shadow(0 0 10px var(--social-accent));
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.colTitle {
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-brand-300);
 }
 
 .link {
@@ -112,30 +253,25 @@
   font-weight: var(--font-medium);
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast), text-shadow var(--transition-fast);
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
 .link:hover {
   color: var(--color-brand-400);
-  text-shadow: 0 0 10px hsl(198 100% 50% / 0.4);
+  transform: translateX(2px);
 }
 
-.dot {
-  color: var(--color-border);
-  font-size: var(--text-xs);
-  user-select: none;
-}
-
-/* ─── Bottom Info ────────────────────────────────────────────────────────── */
+/* ─── Franja inferior ─────────────────────────────────────────────────────── */
 
 .bottom {
+  position: relative;
   border-top: 1px solid var(--color-border-soft);
   max-width: var(--content-max-width);
   margin-inline: auto;
   padding: var(--space-5) var(--space-6);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--space-3) var(--space-6);
   justify-content: space-between;
   align-items: center;
   font-size: var(--text-xs);
@@ -143,21 +279,79 @@
 }
 
 .disclaimer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   color: var(--color-text-disabled);
 }
 
-@media (max-width: 640px) {
-  .linksRow {
-    gap: var(--space-3) var(--space-4);
+.ageBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-warning-400);
+  background: var(--color-warning-bg);
+  border: 1px solid hsl(35 95% 55% / 0.35);
+  border-radius: var(--radius-full);
+  padding: 1px var(--space-2);
+  white-space: nowrap;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+/* El botón flotante de Telegram vive abajo a la derecha: le reservamos sitio
+   para que no tape la franja inferior cuando el usuario llega al final. */
+@media (min-width: 1100px) {
+  .bottom {
+    padding-right: 268px;
+  }
+}
+
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+    padding: var(--space-10) var(--space-5) var(--space-8);
   }
 
-  .dot {
-    display: none;
+  .brand {
+    max-width: 100%;
+  }
+
+  .navWrap {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 640px) {
+  .logo {
+    height: 48px;
+  }
+
+  .cta {
+    width: 100%;
   }
 
   .bottom {
     flex-direction: column;
+    justify-content: center;
     text-align: center;
     gap: var(--space-2);
+    padding-bottom: calc(var(--space-5) + 68px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo,
+  .logoLink:hover .logo,
+  .cta,
+  .cta:hover,
+  .link,
+  .link:hover {
+    transform: none;
+    transition: none;
   }
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { TelegramFloat } from '@/components/features/telegram/TelegramFloat';
+import { CookieConsent } from '@/components/features/cookies/CookieConsent';
 
 export const metadata: Metadata = {
   title: {
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body>
         {children}
         <TelegramFloat />
+        <CookieConsent />
       </body>
     </html>
   );

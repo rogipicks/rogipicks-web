@@ -1,7 +1,17 @@
 // ─── Pick / Bet Types ──────────────────────────────────────────────────────────
 
 import type { Match } from './sport';
-import type { User } from './user';
+
+/** Autor de un pick: el tipster o admin que lo publica. */
+export interface PickAuthor {
+  id: string;
+  username: string;
+  email?: string;
+  role?: 'admin' | 'bettor' | 'tipster' | 'analyst' | 'guest';
+  name?: string;
+  avatarUrl?: string;
+  createdAt?: string;
+}
 
 export type PickResult = 'win' | 'loss' | 'push' | 'pending';
 export type PickConfidence = 1 | 2 | 3 | 4 | 5;
@@ -19,7 +29,7 @@ export interface Pick {
   matchId: string;
   match?: Match;
   userId: string;
-  user?: User;
+  user?: PickAuthor;
   selection: string;          // e.g. "Home Win", "Over 2.5", "Team A -1.5"
   odds: number;               // decimal odds
   stake: number;              // amount wagered

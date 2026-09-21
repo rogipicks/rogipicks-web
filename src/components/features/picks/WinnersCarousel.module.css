@@ -1,6 +1,7 @@
 .carousel {
   position: absolute;
-  bottom: var(--space-8);
+  /* El hero (≥1100px) define --hero-carousel-bottom para apoyar el carrusel justo encima de la flecha de scroll; si no existe, se queda en la franja inferior de siempre. */
+  bottom: var(--hero-carousel-bottom, var(--space-8));
   left: 0;
   right: 0;
   z-index: 2;
@@ -135,7 +136,7 @@
 /* ─── Responsive ────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
-  .carousel { bottom: var(--space-6); }
+  .carousel { bottom: var(--hero-carousel-bottom, var(--space-6)); }
   .card { width: 92px; height: 92px; border-radius: 14px; }
   .logoBox { width: 30px; height: 30px; }
   .check { width: 18px; height: 18px; }

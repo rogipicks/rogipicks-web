@@ -1,0 +1,20 @@
+/* Separador simple entre secciones: una unica linea fina. */
+
+.divider {
+  width: 100%;
+  /* Sin padding lateral: la línea va de borde a borde de la ventana. */
+  padding-block: var(--space-8);
+}
+
+.line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+}
+
+@media (max-width: 720px) {
+  .divider {
+    padding-block: var(--space-6);
+  }
+}
