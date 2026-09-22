@@ -21,16 +21,9 @@ export default function BookmakersPage() {
       <div className={styles.list}>
         {BOOKMAKERS.map((house) => (
           <article key={house.name} className={styles.card}>
-            {/* Columna 1: Imagen / Foto de la casa de apuestas a la izquierda */}
+            {/* Columna 1: Foto de la casa de apuestas (de momento, marcador "Próximamente") */}
             <div className={styles.logoBox}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={house.logo}
-                alt={`Logo ${house.name}`}
-                className={styles.logoImg}
-                width={140}
-                height={68}
-              />
+              <span className={styles.soonText}>Próximamente</span>
             </div>
 
             {/* Columna 2: Título y Descripción */}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { TelegramFloat } from '@/components/features/telegram/TelegramFloat';
 import { CookieConsent } from '@/components/features/cookies/CookieConsent';
+import { ScrollToTop } from '@/components/layout/ScrollToTop';
 
 export const metadata: Metadata = {
   title: {
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="es">
       <body>
+        <ScrollToTop />
         {children}
         <TelegramFloat />
         <CookieConsent />

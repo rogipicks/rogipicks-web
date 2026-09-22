@@ -133,6 +133,24 @@
   color: var(--color-text-tertiary, var(--color-text-secondary));
 }
 
+/* Cuota del pick, bajo los nombres (píldora en el acento de cuotas) */
+.odds {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid hsl(190 100% 55% / 0.28);
+  background: hsl(190 100% 55% / 0.12);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--color-accent-400);
+}
+
 /* ─── Responsive ────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {

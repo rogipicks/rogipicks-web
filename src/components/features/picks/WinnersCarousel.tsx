@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Pick } from '@/types/pick';
 import { ROUTES } from '@/constants/routes';
+import { formatOdds } from '@/lib/utils/formatters';
 import styles from './WinnersCarousel.module.css';
 
 interface WinnersCarouselProps {
@@ -40,7 +41,8 @@ const MAX_HALF_CARDS = 60;
 
 /**
  * Carrusel con movimiento automático hacia la derecha (bucle infinito).
- * Tarjetas cuadradas: logo local — tic verde — logo visitante.
+ * Tarjetas cuadradas: logo local — tic verde — logo visitante, con los nombres
+ * y la cuota del pick debajo.
  * Pausa al pasar el mouse. Cada tarjeta enlaza al detalle del pick.
  */
 export function WinnersCarousel({ picks }: WinnersCarouselProps) {
@@ -101,6 +103,7 @@ export function WinnersCarousel({ picks }: WinnersCarouselProps) {
           const away = pick.match?.awayTeam;
           const homeName = home?.shortName || home?.name || 'Local';
           const awayName = away?.shortName || away?.name || 'Visitante';
+          const hasOdds = typeof pick.odds === 'number' && !isNaN(pick.odds);
 
           return (
             <Link
@@ -121,6 +124,10 @@ export function WinnersCarousel({ picks }: WinnersCarouselProps) {
                 <span className={styles.nameSide}>{homeName}</span>
                 <span className={styles.nameDash}>-</span>
                 <span className={styles.nameSide}>{awayName}</span>
+              </span>
+              {/* Cuota del pick (misma convención que PickCard: 2.50x) */}
+              <span className={styles.odds}>
+                {hasOdds ? formatOdds(pick.odds) : '—'}
               </span>
             </Link>
           );
