@@ -631,6 +631,16 @@
   object-fit: contain;
 }
 
+/* Texto "Próximamente" en cada ficha (fondo blanco, sin logo de la casa) */
+.houseSoon {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #16233a;
+  user-select: none;
+}
+
 .housesNote {
   font-size: var(--text-xs);
   color: var(--color-text-disabled);

@@ -104,6 +104,11 @@ export const PickCard: React.FC<PickCardProps> = ({ pick }) => {
 
         {/* Center: Date/Time and Dash */}
         <div className={styles.matchCenter}>
+          {pick.match?.competition && (
+            <span className={styles.matchCompetition}>
+              {pick.match.competition}
+            </span>
+          )}
           {pick.match?.startTime && (
             <span className={styles.matchDateTime}>
               {formatMatchDateTime(pick.match.startTime)}

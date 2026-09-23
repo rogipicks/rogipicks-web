@@ -25,6 +25,7 @@ export interface Match {
   homeTeam: Team;
   awayTeam: Team;
   startTime: string;
+  competition?: string; // nombre de la competición/liga (ej. "LaLiga", "ATP Hamburg")
   status: MatchStatus;
   homeScore?: number;
   awayScore?: number;

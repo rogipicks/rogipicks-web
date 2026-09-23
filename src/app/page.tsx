@@ -414,13 +414,8 @@ export default async function HomePage() {
                   className={styles.houseChip}
                   title={house.name}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={house.logo}
-                    alt={`Logo ${house.name}`}
-                    className={styles.houseLogo}
-                    loading="lazy"
-                  />
+                  {/* Marcador "Próximamente" en lugar del logo de la casa */}
+                  <span className={styles.houseSoon}>Próximamente</span>
                 </a>
               ))}
             </div>

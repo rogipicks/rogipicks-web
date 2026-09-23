@@ -85,6 +85,7 @@ type SportFormData = {
   awayTeam: string;
   awayLogo: string;   // base64 data URL
   startTime: string;
+  competition: string; // competición/liga del partido
   selection: string;
   odds: string;
   probability: string;
@@ -196,6 +197,7 @@ const emptyFormForSport = (): SportFormData => ({
   awayTeam: '',
   awayLogo: '',
   startTime: '',
+  competition: '',
   selection: '',
   odds: '',
   probability: '',
@@ -593,6 +595,7 @@ export default function AdminPage() {
             sportId: `s-${activeSport}`,
             logoUrl: form.awayLogo || undefined,
           },
+          competition: form.competition.trim() || undefined,
           startTime: startTimeIso,
           status: 'scheduled' as const,
           odds: { homeWin: oddsNum, awayWin: 2.0, updatedAt: new Date().toISOString() },
@@ -665,6 +668,7 @@ export default function AdminPage() {
             sportId: `s-${activeSport}`,
             logoUrl: form.awayLogo || undefined,
           },
+          competition: form.competition.trim() || undefined,
           startTime: new Date(form.startTime).toISOString(),
           status: 'scheduled',
           odds: { homeWin: oddsNum, awayWin: 2.0, updatedAt: new Date().toISOString() },
@@ -728,6 +732,7 @@ export default function AdminPage() {
         awayTeam: pick.match?.awayTeam?.name || '',
         awayLogo: pick.match?.awayTeam?.logoUrl || '',
         startTime: dateStr,
+        competition: pick.match?.competition || '',
         selection: pick.selection || '',
         odds: pick.odds != null ? String(pick.odds) : '',
         probability: pick.probability || '',
@@ -1296,6 +1301,19 @@ export default function AdminPage() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Row 1b: Competición (encima de la fecha) */}
+              <div className={styles.field}>
+                <label className={styles.label}>Competición</label>
+                <input
+                  type="text"
+                  name="competition"
+                  value={form.competition}
+                  onChange={handleChange}
+                  placeholder="Ej: LaLiga, NBA, ATP Hamburg..."
+                  className={styles.input}
+                />
               </div>
 
               {/* Row 2: Date */}

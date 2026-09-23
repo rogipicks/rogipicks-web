@@ -204,7 +204,7 @@
 .metaRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   position: relative;
   gap: var(--space-5);
   padding-block: var(--space-3);
@@ -218,16 +218,8 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-}
-
-.metaItem:first-child {
-  align-items: flex-start;
-  text-align: left;
-}
-
-.metaItem:last-child {
-  align-items: flex-end;
-  text-align: right;
+  align-items: center;
+  text-align: center;
 }
 
 .metaLabel {
@@ -248,12 +240,9 @@
 }
 
 .metaArrow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   color: var(--color-brand-400);
 }
 

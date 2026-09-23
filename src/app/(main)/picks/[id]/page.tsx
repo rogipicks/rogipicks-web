@@ -7,6 +7,7 @@ import { formatOdds } from '@/lib/utils/formatters';
 import { ROUTES } from '@/constants/routes';
 import styles from './pickDetail.module.css';
 import { PickDetailCard } from './PickDetailCard';
+import { SharePickCard } from '@/components/features/picks/SharePickCard';
 import { ChannelCard } from '@/components/features/telegram/ChannelCard';
 
 interface PickDetailPageProps {
@@ -93,6 +94,9 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
       </Link>
 
       <PickDetailCard pickId={pick.id} initialResult={pick.result}>
+        {/* Botón de compartir (abre la tarjeta para redes / JPG) */}
+        <SharePickCard pick={pick} />
+
         {/* Match Section (Fixture Layout) */}
         <div className={styles.matchSection}>
           {/* Home team */}
@@ -116,6 +120,11 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
 
           {/* Center: Date/Time and Dash */}
           <div className={styles.matchCenter}>
+            {pick.match?.competition && (
+              <span className={styles.matchCompetition}>
+                {pick.match.competition}
+              </span>
+            )}
             {pick.match?.startTime && (
               <span className={styles.matchDateTime}>
                 {formatMatchDateTime(pick.match.startTime)}
