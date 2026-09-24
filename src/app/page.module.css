@@ -608,13 +608,16 @@
 
 .houseChip {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 3px;
   height: 84px;
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-xl);
   background: hsl(0 0% 100% / 0.96);
   border: 1px solid hsl(215 25% 24%);
+  text-decoration: none;
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -631,14 +634,25 @@
   object-fit: contain;
 }
 
-/* Texto "Próximamente" en cada ficha (fondo blanco, sin logo de la casa) */
+/* Texto "Próximamente" en cada ficha (fondo blanco) */
 .houseSoon {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #16233a;
+  color: #64748b;
   user-select: none;
+  line-height: 1;
+}
+
+/* Nombre de la casa de apuestas debajo de Próximamente */
+.houseName {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .housesNote {

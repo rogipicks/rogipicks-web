@@ -2,10 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-/** Fecha de hoy a medianoche (hora local). */
+const MIN_DATE = new Date(2026, 8, 25); // Inicio del sitio: 25/09/2026
+
+/** Fecha de hoy a medianoche (hora local). No permite fechas anteriores al 25/09/2026. */
 export function getTodayMidnight(): Date {
   const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (today.getTime() < MIN_DATE.getTime()) {
+    return new Date(MIN_DATE);
+  }
+  return today;
 }
 
 /** Clave YYYY-MM-DD de una fecha (hora local). */

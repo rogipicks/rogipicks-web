@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllPicks, createPick } from '@/lib/db/picksDb';
+import { getAllPicks, createPick, createPicks } from '@/lib/db/picksDb';
 import type { Pick } from '@/types/pick';
 
 export const dynamic = 'force-dynamic';
@@ -29,7 +29,22 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // Validación básica
+    // Soporte para creación en lote (array de picks)
+    if (Array.isArray(body)) {
+      if (body.length === 0) {
+        return NextResponse.json({ success: true, data: [], count: 0 });
+      }
+      const validPicks: Pick[] = body.map((item, idx) => ({
+        ...item,
+        id: item.id || `pick-${Date.now()}-${idx}`,
+        createdAt: item.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }));
+      const created = await createPicks(validPicks);
+      return NextResponse.json({ success: true, data: created, count: created.length }, { status: 201 });
+    }
+
+    // Validación básica para pick individual
     if (!body.selection || !body.odds || !body.match) {
       return NextResponse.json(
         { success: false, error: 'Datos incompletos para crear el pronóstico' },

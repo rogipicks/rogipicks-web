@@ -129,6 +129,15 @@ export async function createPick(newPick: Pick): Promise<Pick> {
   return newPick;
 }
 
+export async function createPicks(newPicks: Pick[]): Promise<Pick[]> {
+  await ensureDbInitialized();
+  const currentPicks = await getAllPicks();
+  const updated = [...newPicks, ...currentPicks];
+  const { activePicks } = purgeExpiredPicks(updated);
+  await writeDb(activePicks);
+  return newPicks;
+}
+
 export async function updatePick(id: string, partialPick: Partial<Pick>): Promise<Pick | null> {
   await ensureDbInitialized();
   const currentPicks = await getAllPicks();

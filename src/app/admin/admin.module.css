@@ -387,6 +387,21 @@
   box-shadow: 0 0 14px hsl(198 100% 50% / 0.35);
 }
 
+.podiumBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  margin-left: 6px;
+  background: hsl(45 95% 58% / 0.15);
+  border: 1px solid hsl(45 95% 58% / 0.4);
+  color: #ffe08a;
+  vertical-align: middle;
+}
+
 /* ─── Interruptor "Telegram?" del reto ───────────────────────────────────── */
 
 .telegramToggleWrap {

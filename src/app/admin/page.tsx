@@ -6,6 +6,7 @@ import type { Reto, RetoBadgeType, RetoStep, RetoStepResult } from '@/types/reto
 import { getLocalPicks, saveLocalPicks, subscribeToPicks } from '@/lib/utils/picksSync';
 import { getLocalRetos, saveLocalRetos, subscribeToRetos } from '@/lib/utils/retosSync';
 import { DatePill } from '@/components/features/picks/DatePill';
+import { ExcelPicksImporter } from '@/components/features/admin/ExcelPicksImporter';
 import { useDayDate } from '@/hooks/useDayDate';
 import styles from './admin.module.css';
 
@@ -227,9 +228,10 @@ export default function AdminPage() {
   const [retoForm, setRetoForm] = useState<RetoFormData>(emptyRetoForm);
   const [editingRetoId, setEditingRetoId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
-  const [activeTab, setActiveTab] = useState<'add' | 'list' | 'add-reto' | 'list-retos'>('add');
+  const [activeTab, setActiveTab] = useState<'add' | 'list' | 'add-reto' | 'list-retos' | 'import'>('add');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draggingField, setDraggingField] = useState<DragKey | null>(null);
+  const [isGeneratingAiForForm, setIsGeneratingAiForForm] = useState(false);
   // Fecha del admin: empieza en el día actual y avanza sola a las 00:00
   const [adminDate, setAdminDate] = useDayDate();
   const [showAllDates, setShowAllDates] = useState(false);
@@ -242,6 +244,47 @@ export default function AdminPage() {
 
   // Shortcut to current sport's form
   const form = forms[activeSport];
+
+  const handleGenerateAiAnalysisForCurrentForm = async () => {
+    if (!form.homeTeam || !form.awayTeam || !form.selection) {
+      alert('Introduce primero el equipo local, el visitante y el pronóstico para generar el análisis.');
+      return;
+    }
+    setIsGeneratingAiForForm(true);
+    try {
+      const savedKey = typeof window !== 'undefined' ? localStorage.getItem('rogipicks_groq_key') || localStorage.getItem('rogipicks_grok_key') || '' : '';
+      const res = await fetch('/api/ai/analyze-pick', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          homeTeam: form.homeTeam,
+          awayTeam: form.awayTeam,
+          competition: form.competition,
+          selection: form.selection,
+          odds: form.odds,
+          sport: activeSport,
+          confidence: parseInt(form.confidence, 10) || 3,
+          apiKey: savedKey,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.analysis) {
+          setForms((prev) => ({
+            ...prev,
+            [activeSport]: {
+              ...prev[activeSport],
+              analysis: data.analysis,
+            },
+          }));
+        }
+      }
+    } catch (err) {
+      console.error('Error generando análisis con IA:', err);
+    } finally {
+      setIsGeneratingAiForForm(false);
+    }
+  };
 
   const fetchAdminPicks = async () => {
     // Caché local solo como pintado inmediato mientras responde la base de datos
@@ -1107,6 +1150,12 @@ export default function AdminPage() {
             📋 Picks publicados ({picks.length})
           </button>
           <button
+            className={`${styles.tab} ${activeTab === 'import' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('import')}
+          >
+            📊 Importar Excel (IA Groq)
+          </button>
+          <button
             className={`${styles.tab} ${activeTab === 'add-reto' ? styles.tabActive : ''}`}
             onClick={() => {
               setActiveTab('add-reto');
@@ -1371,8 +1420,31 @@ export default function AdminPage() {
 
               {/* Row 6: Analysis */}
               <div className={styles.fieldFull}>
-                <label className={styles.label}>Análisis del partido</label>
-                <textarea name="analysis" value={form.analysis} onChange={handleChange} placeholder="Explica los motivos del pronóstico..." className={styles.textarea} rows={4} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <label className={styles.label} style={{ margin: 0 }}>Análisis del partido</label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateAiAnalysisForCurrentForm}
+                    disabled={isGeneratingAiForForm}
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(198 100% 45%), hsl(220 90% 50%))',
+                      border: '1px solid hsl(198 100% 60% / 0.5)',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      padding: '4px 10px',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                    title="Generar automáticamente el análisis deportivo con IA (Groq)"
+                  >
+                    {isGeneratingAiForForm ? '⏳ Generando con Groq…' : '⚡ Generar con Groq'}
+                  </button>
+                </div>
+                <textarea name="analysis" value={form.analysis} onChange={handleChange} placeholder="Explica los motivos del pronóstico (o pulsa 'Generar con Groq' para redactarlo automáticamente)..." className={styles.textarea} rows={4} />
               </div>
 
               {/* Row 7: Otros pronósticos */}
@@ -2167,6 +2239,20 @@ export default function AdminPage() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ── IMPORT EXCEL WITH AI (GROK) ── */}
+        {activeTab === 'import' && (
+          <ExcelPicksImporter
+            onPicksImported={(newPicks) => {
+              const updated = [...newPicks, ...picks];
+              setPicks(updated);
+              saveLocalPicks(updated);
+              setSuccessMsg(`✅ ¡${newPicks.length} picks importados y publicados con éxito!`);
+              setTimeout(() => setSuccessMsg(''), 4000);
+              setActiveTab('list');
+            }}
+          />
         )}
       </main>
     </div>

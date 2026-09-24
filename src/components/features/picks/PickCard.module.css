@@ -151,6 +151,8 @@
   align-items: center;
   justify-content: space-between;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 130px;
+  box-sizing: border-box;
 }
 
 .matchTeamSide {
@@ -196,6 +198,11 @@
   text-align: center;
   line-height: 1.25;
   word-break: break-word;
+  min-height: 2.5em; /* Ocupa siempre el equivalente a 2 líneas para mantener el equilibrio */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .matchCenter {
@@ -323,9 +330,18 @@
 }
 
 .stars {
-  color: var(--color-accent-400);
   font-size: var(--text-sm);
   letter-spacing: 2px;
+  line-height: 1;
+}
+
+.starsOn {
+  color: hsl(45 95% 58%);
+  text-shadow: 0 0 8px hsl(45 95% 58% / 0.35);
+}
+
+.starsOff {
+  color: hsl(222 25% 30%);
 }
 
 .analysisContainer {

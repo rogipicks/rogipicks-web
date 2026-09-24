@@ -176,18 +176,11 @@ export default async function HomePage() {
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 10);
 
-  // Podio: picks marcados como 1º/2º/3º en admin (públicos); gana el más reciente
-  const podiumOfDay = ([1, 2, 3] as const).map((pos) =>
-    allPicks
-      .filter((p) => p.podium === pos && p.isPublic)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] ?? null
-  );
-
-  // Últimos picks subidos: los 5 más recientes públicos
+  // Últimos picks subidos: los 3 más recientes públicos
   const latestPicks = allPicks
     .filter((p) => p.isPublic)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, 5);
+    .slice(0, 3);
 
   const allRetos = await getAllRetos();
 
@@ -323,8 +316,8 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Podio: picks marcados como 1º, 2º o 3º en admin (siempre visible) */}
-        <BestOfDayPodium positions={podiumOfDay} />
+        {/* Podio: picks marcados como 1º, 2º o 3º en admin, organizados por día */}
+        <BestOfDayPodium initialPicks={allPicks} />
 
         {/* Franja separadora entre el podio y los últimos picks */}
         <SectionDivider />
@@ -414,8 +407,9 @@ export default async function HomePage() {
                   className={styles.houseChip}
                   title={house.name}
                 >
-                  {/* Marcador "Próximamente" en lugar del logo de la casa */}
+                  {/* Marcador "Próximamente" con nombre de la casa de apuestas */}
                   <span className={styles.houseSoon}>Próximamente</span>
+                  <span className={styles.houseName}>{house.name}</span>
                 </a>
               ))}
             </div>

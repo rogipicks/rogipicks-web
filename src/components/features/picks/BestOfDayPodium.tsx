@@ -1,7 +1,13 @@
+'use client';
+
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { ROUTES } from '@/constants/routes';
 import { formatOdds } from '@/lib/utils/formatters';
 import type { Pick } from '@/types/pick';
+import { DatePill } from './DatePill';
+import { useDayDate, toDateKey, getTodayMidnight } from '@/hooks/useDayDate';
+import { subscribeToPicks } from '@/lib/utils/picksSync';
 import styles from './BestOfDayPodium.module.css';
 
 type PodiumTone = 'stepGold' | 'stepSilver' | 'stepBronze';
@@ -34,6 +40,22 @@ function formatWhen(source: string | undefined): string {
     );
   } catch {
     return '—';
+  }
+}
+
+/** Obtiene la clave YYYY-MM-DD del día al que pertenece el pick */
+function getPickDate(pick: Pick): string {
+  const dateSource = pick.match?.startTime || pick.createdAt;
+  if (!dateSource) return '';
+  try {
+    const d = new Date(dateSource);
+    if (isNaN(d.getTime())) return '';
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  } catch {
+    return '';
   }
 }
 
@@ -117,11 +139,72 @@ function PodiumPickCard({ pick }: { pick: Pick }) {
   );
 }
 
+interface BestOfDayPodiumProps {
+  initialPicks?: Pick[];
+  positions?: readonly (Pick | null)[];
+}
+
 /**
  * Podio "Las mejores apuestas del día".
- * `positions` contiene el pick de cada posición: [1º, 2º, 3º] (null si está vacía).
+ * Muestra el podio organizado día a día. Permite navegar entre días mediante DatePill.
+ * Si no hay picks asignados al podio para el día seleccionado, se muestra vacío.
  */
-export function BestOfDayPodium({ positions }: { positions: readonly (Pick | null)[] }) {
+export function BestOfDayPodium({ initialPicks, positions: externalPositions }: BestOfDayPodiumProps) {
+  const [currentDate, setCurrentDate] = useDayDate();
+  const [picks, setPicks] = useState<Pick[]>(initialPicks ?? []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPicks((latestPicks) => {
+      setPicks(latestPicks);
+    });
+
+    const fetchLatest = async () => {
+      try {
+        const res = await fetch('/api/picks', { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            setPicks(json.data);
+          }
+        }
+      } catch {}
+    };
+
+    fetchLatest();
+    const onFocus = () => fetchLatest();
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('focus', onFocus);
+    };
+  }, []);
+
+  const selectedDateStr = useMemo(() => {
+    return toDateKey(currentDate);
+  }, [currentDate]);
+
+  const isToday = useMemo(() => {
+    return toDateKey(currentDate) === toDateKey(getTodayMidnight());
+  }, [currentDate]);
+
+  const dayPicks = useMemo(() => {
+    return picks.filter((p) => p.isPublic && getPickDate(p) === selectedDateStr);
+  }, [picks, selectedDateStr]);
+
+  const positions = useMemo(() => {
+    if (externalPositions && !initialPicks) {
+      return externalPositions;
+    }
+    return ([1, 2, 3] as const).map((pos) =>
+      dayPicks
+        .filter((p) => p.podium === pos)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] ?? null
+    );
+  }, [externalPositions, initialPicks, dayPicks]);
+
+  const hasAnyPodiumPick = positions.some((p) => p !== null);
+
   return (
     <section className={styles.section} aria-label="Las mejores apuestas del día">
       <div className={'container ' + styles.inner}>
@@ -133,6 +216,9 @@ export function BestOfDayPodium({ positions }: { positions: readonly (Pick | nul
           <p className={styles.subtitle}>
             Los picks destacados por RogiPicks, ordenados por podio.
           </p>
+          <div className={styles.dateSelectorRow}>
+            <DatePill currentDate={currentDate} onDateChange={setCurrentDate} />
+          </div>
         </div>
 
         <div className={styles.podium}>
@@ -143,7 +229,10 @@ export function BestOfDayPodium({ positions }: { positions: readonly (Pick | nul
                 {pick ? (
                   <PodiumPickCard pick={pick} />
                 ) : (
-                  <div className={styles.emptyCard}>Sin pick</div>
+                  <div className={styles.emptyCard}>
+                    <span className={styles.emptyCardPosition}>{position}º PUESTO</span>
+                    <span className={styles.emptyCardText}>Sin pick asignado</span>
+                  </div>
                 )}
                 <div className={styles.base}>
                   <span className={styles.position}>{position}</span>
@@ -152,6 +241,17 @@ export function BestOfDayPodium({ positions }: { positions: readonly (Pick | nul
             );
           })}
         </div>
+
+        {!hasAnyPodiumPick && (
+          <div className={styles.emptyNotice}>
+            <span className={styles.emptyNoticeIcon}>{isToday ? '⏳' : '📅'}</span>
+            <span>
+              {isToday
+                ? 'El podio de hoy todavía no tiene pronósticos asignados. ¡Puedes navegar por días anteriores con el selector de fecha!'
+                : 'No hay pronósticos asignados al podio para esta fecha.'}
+            </span>
+          </div>
+        )}
       </div>
     </section>
   );

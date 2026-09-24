@@ -9,29 +9,44 @@ interface DatePillProps {
 }
 
 const DAY_NAMES = ['DO', 'LU', 'MA', 'MI', 'JU', 'VI', 'SA'];
-const MIN_DATE = new Date(2026, 8, 23); // Inicio del sitio: 23/09/2026
-const MIN_DATE_STR = '2026-09-23';
+const MIN_DATE = new Date(2026, 8, 25); // Inicio del sitio: 25/09/2026
+const MIN_DATE_STR = '2026-09-25';
 
 export const DatePill: React.FC<DatePillProps> = ({ currentDate, onDateChange }) => {
-  const day = String(currentDate.getDate()).padStart(2, '0');
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const weekday = DAY_NAMES[currentDate.getDay()];
+  // Asegura que no se muestre ni maneje una fecha anterior al 25/09/2026
+  React.useEffect(() => {
+    const curZero = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()).getTime();
+    const minZero = new Date(MIN_DATE.getFullYear(), MIN_DATE.getMonth(), MIN_DATE.getDate()).getTime();
+    if (curZero < minZero) {
+      onDateChange(new Date(MIN_DATE));
+    }
+  }, [currentDate, onDateChange]);
+
+  const activeDate = React.useMemo(() => {
+    const curZero = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()).getTime();
+    const minZero = new Date(MIN_DATE.getFullYear(), MIN_DATE.getMonth(), MIN_DATE.getDate()).getTime();
+    return curZero < minZero ? new Date(MIN_DATE) : currentDate;
+  }, [currentDate]);
+
+  const day = String(activeDate.getDate()).padStart(2, '0');
+  const month = String(activeDate.getMonth() + 1).padStart(2, '0');
+  const weekday = DAY_NAMES[activeDate.getDay()];
   const displayStr = `${day}/${month} ${weekday}`;
 
   // YYYY-MM-DD for native input
-  const year = currentDate.getFullYear();
+  const year = activeDate.getFullYear();
   const inputVal = `${year}-${month}-${day}`;
 
   const isAtMinDate = React.useMemo(() => {
-    const curZero = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()).getTime();
+    const curZero = new Date(activeDate.getFullYear(), activeDate.getMonth(), activeDate.getDate()).getTime();
     const minZero = new Date(MIN_DATE.getFullYear(), MIN_DATE.getMonth(), MIN_DATE.getDate()).getTime();
     return curZero <= minZero;
-  }, [currentDate]);
+  }, [activeDate]);
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isAtMinDate) return;
-    const prev = new Date(currentDate);
+    const prev = new Date(activeDate);
     prev.setDate(prev.getDate() - 1);
     if (prev.getTime() < MIN_DATE.getTime()) {
       onDateChange(new Date(MIN_DATE));
@@ -42,7 +57,7 @@ export const DatePill: React.FC<DatePillProps> = ({ currentDate, onDateChange })
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const next = new Date(currentDate);
+    const next = new Date(activeDate);
     next.setDate(next.getDate() + 1);
     onDateChange(next);
   };

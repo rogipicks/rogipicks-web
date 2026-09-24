@@ -73,14 +73,33 @@
   box-shadow: 0 4px 16px hsl(0 0% 0% / 0.35);
 }
 
-/* Texto "Próximamente" mientras no haya foto de la casa */
+/* Contenedor del texto "Próximamente" y nombre de la casa */
+.soonWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: var(--space-4);
+}
+
 .soonText {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-text-secondary);
+  color: #94a3b8;
   user-select: none;
+  line-height: 1;
+}
+
+.soonHouseName {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── Columna 2: Título, Valoración y Descripción en el centro ────────────── */

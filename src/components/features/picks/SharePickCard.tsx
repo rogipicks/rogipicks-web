@@ -242,7 +242,7 @@ async function renderPickCard(pick: Pick): Promise<HTMLCanvasElement> {
   } else {
     ctx.fillStyle = WHITE;
     ctx.font = '800 50px Inter, system-ui, sans-serif';
-    ctx.fillText('RogiPicks', M, 106);
+    ctx.fillText('rogipicks.es', M, 106);
   }
 
   // Píldora de sección, alineada a la derecha de la cabecera
@@ -308,8 +308,11 @@ async function renderPickCard(pick: Pick): Promise<HTMLCanvasElement> {
   const selectionSize = pick.selection.length > 24 ? 40 : 46;
   ctx.font = `800 ${selectionSize}px Inter, system-ui, sans-serif`;
   const selLines = wrapText(ctx, pick.selection, 540, 2);
+  const oddsY = selY + 160;
+  const selLineHeight = selectionSize + 10;
+  const selStartY = oddsY - ((selLines.length - 1) * selLineHeight) / 2;
   selLines.forEach((line, i) => {
-    ctx.fillText(line, M + 64, selY + 142 + i * (selectionSize + 10));
+    ctx.fillText(line, M + 64, selStartY + i * selLineHeight);
   });
 
   ctx.textAlign = 'right';
@@ -321,7 +324,7 @@ async function renderPickCard(pick: Pick): Promise<HTMLCanvasElement> {
   ctx.save();
   ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
   ctx.shadowBlur = 34;
-  ctx.fillText(`${pick.odds.toFixed(2)}x`, CARD_W - M - 54, selY + 160);
+  ctx.fillText(`${pick.odds.toFixed(2)}x`, CARD_W - M - 54, oddsY);
   ctx.restore();
   ctx.textAlign = 'left';
 
@@ -334,7 +337,7 @@ async function renderPickCard(pick: Pick): Promise<HTMLCanvasElement> {
 
   ctx.fillStyle = WHITE;
   ctx.font = '800 34px Inter, system-ui, sans-serif';
-  ctx.fillText('RogiPicks', M, 982);
+  ctx.fillText('rogipicks.es', M, 982);
   ctx.fillStyle = MUTED;
   ctx.font = '500 24px Inter, system-ui, sans-serif';
   ctx.fillText('Picks deportivos con análisis y transparencia', M, 1020);

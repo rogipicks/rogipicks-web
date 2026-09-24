@@ -162,8 +162,8 @@ export const PickCard: React.FC<PickCardProps> = ({ pick }) => {
         <div className={styles.metric}>
           <span className={styles.metricLabel}>Confianza</span>
           <span className={styles.stars}>
-            {'★'.repeat(pick.confidence)}
-            {'☆'.repeat(5 - pick.confidence)}
+            <span className={styles.starsOn}>{'★'.repeat(pick.confidence)}</span>
+            <span className={styles.starsOff}>{'☆'.repeat(Math.max(0, 5 - pick.confidence))}</span>
           </span>
         </div>
       </div>
