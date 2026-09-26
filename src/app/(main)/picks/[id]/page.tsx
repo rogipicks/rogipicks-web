@@ -107,7 +107,11 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
                 <img
                   src={pick.match.homeTeam.logoUrl}
                   alt={homeTeam}
-                  className={styles.fixtureLogo}
+                  className={`${styles.fixtureLogo} ${
+                    pick.match.homeTeam.logoUrl.includes('flagcdn') || pick.match?.sport?.category === 'tennis'
+                      ? styles.fixtureLogoFlag
+                      : styles.fixtureLogoKit
+                  }`}
                 />
               ) : (
                 <span className={styles.logoLetter}>
@@ -141,7 +145,11 @@ export default async function PickDetailPage({ params }: PickDetailPageProps) {
                 <img
                   src={pick.match.awayTeam.logoUrl}
                   alt={awayTeam}
-                  className={styles.fixtureLogo}
+                  className={`${styles.fixtureLogo} ${
+                    pick.match.awayTeam.logoUrl.includes('flagcdn') || pick.match?.sport?.category === 'tennis'
+                      ? styles.fixtureLogoFlag
+                      : styles.fixtureLogoKit
+                  }`}
                 />
               ) : (
                 <span className={styles.logoLetter}>

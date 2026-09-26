@@ -9,6 +9,13 @@ export interface ParsedPickDraft {
   id: string;
   homeTeam: string;
   awayTeam: string;
+  homeLogo?: string;
+  awayLogo?: string;
+  homeLabel?: string;
+  awayLabel?: string;
+  homeType?: 'flag' | 'kit' | 'badge';
+  awayType?: 'flag' | 'kit' | 'badge';
+  isResolvingLogos?: boolean;
   competition: string;
   date: string;       // YYYY-MM-DD
   time: string;       // HH:MM
@@ -40,7 +47,10 @@ function autoDetectSport(comp: string, selection: string): string {
   if (
     c.includes('atp') || c.includes('wta') || c.includes('challenger') ||
     c.includes('itf') || c.includes('open') || c.includes('roland') ||
-    c.includes('wimbledon') || c.includes('slam') || s.includes('set') || s.includes('juego')
+    c.includes('wimbledon') || c.includes('slam') || c.includes('davis') ||
+    c.includes('plovdiv') || c.includes('utr') ||
+    /\bch\s*\d+/i.test(comp) || /\bm\d{2}/i.test(comp) || /\bw\d{2}/i.test(comp) ||
+    s.includes('set') || s.includes('juego') || s.includes('games') || s.includes('tiebreak')
   ) {
     return 'tennis';
   }
@@ -135,7 +145,11 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
   const [activeInputMode, setActiveInputMode] = useState<'upload' | 'paste'>('upload');
   const [pasteText, setPasteText] = useState('');
   const [groqKey, setGroqKey] = useState('');
+  const [geminiKey, setGeminiKey] = useState('');
   const [isBulkGenerating, setIsBulkGenerating] = useState(false);
+  const [isBulkResolvingLogos, setIsBulkResolvingLogos] = useState(false);
+  const [isGeneratingKits, setIsGeneratingKits] = useState(false);
+  const [kitsProgress, setKitsProgress] = useState({ current: 0, total: 0 });
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -143,16 +157,221 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Carga clave de Groq almacenada previamente en local si existe
+  // Carga claves almacenadas previamente en local si existen
   useEffect(() => {
-    const savedKey = localStorage.getItem('rogipicks_groq_key') || localStorage.getItem('rogipicks_grok_key');
-    if (savedKey) setGroqKey(savedKey);
+    const savedGroq = localStorage.getItem('rogipicks_groq_key') || localStorage.getItem('rogipicks_grok_key');
+    if (savedGroq) setGroqKey(savedGroq);
+
+    const savedGemini = localStorage.getItem('rogipicks_gemini_key') || localStorage.getItem('rogipicks_google_key');
+    if (savedGemini) setGeminiKey(savedGemini);
   }, []);
 
   const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setGroqKey(val);
     localStorage.setItem('rogipicks_groq_key', val);
+  };
+
+  const handleGeminiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setGeminiKey(val);
+    localStorage.setItem('rogipicks_gemini_key', val);
+  };
+
+  /** Resuelve banderas de tenis y camisetas de fútbol/baloncesto con IA */
+  const resolveLogosForDrafts = async (draftList?: ParsedPickDraft[]) => {
+    const targets = draftList && draftList.length > 0 ? draftList : drafts;
+    if (!targets || targets.length === 0) return;
+
+    setIsBulkResolvingLogos(true);
+
+    const targetIds = new Set(targets.map((t) => t.id));
+    setDrafts((prev) =>
+      prev.map((d) => (targetIds.has(d.id) ? { ...d, isResolvingLogos: true } : d))
+    );
+
+    try {
+      const itemsPayload = targets.map((d) => ({
+        id: d.id,
+        homeTeam: d.homeTeam,
+        awayTeam: d.awayTeam,
+        sport: d.sport,
+        competition: d.competition,
+      }));
+
+      const res = await fetch('/api/ai/resolve-logos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: itemsPayload,
+          apiKey: groqKey,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.results)) {
+          const resultsMap = new Map(data.results.map((r: any) => [r.id, r]));
+
+          setDrafts((prev) =>
+            prev.map((d) => {
+              const resObj: any = resultsMap.get(d.id);
+              if (!resObj) return { ...d, isResolvingLogos: false };
+              const isTennis = d.sport === 'tennis';
+              return {
+                ...d,
+                homeLogo: isTennis ? (resObj.homeLogo || 'https://flagcdn.com/w160/es.png') : (resObj.homeLogo || d.homeLogo || ''),
+                awayLogo: isTennis ? (resObj.awayLogo || 'https://flagcdn.com/w160/es.png') : (resObj.awayLogo || d.awayLogo || ''),
+                homeLabel: resObj.homeLabel || (isTennis ? 'España' : d.homeLabel),
+                awayLabel: resObj.awayLabel || (isTennis ? 'España' : d.awayLabel),
+                homeType: isTennis ? 'flag' : (resObj.homeType || d.homeType),
+                awayType: isTennis ? 'flag' : (resObj.awayType || d.awayType),
+                isResolvingLogos: false,
+              };
+            })
+          );
+          setIsBulkResolvingLogos(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('Error al resolver logos con IA:', err);
+    }
+
+    setDrafts((prev) =>
+      prev.map((d) => (targetIds.has(d.id) ? { ...d, isResolvingLogos: false } : d))
+    );
+    setIsBulkResolvingLogos(false);
+  };
+
+  /**
+   * Genera imágenes de camisetas con IA de Google Gemini para fútbol y basket.
+   * Para tenis sigue usando banderas del resolver existente.
+   */
+  const generateKitsWithAI = async (draftList?: ParsedPickDraft[]) => {
+    const targets = (draftList && draftList.length > 0 ? draftList : drafts).filter(
+      (d) => d.sport !== 'tennis'
+    );
+    const tennisTargets = (draftList && draftList.length > 0 ? draftList : drafts).filter(
+      (d) => d.sport === 'tennis'
+    );
+
+    // Para tenis: resolver banderas como siempre
+    if (tennisTargets.length > 0) {
+      resolveLogosForDrafts(tennisTargets);
+    }
+
+    if (targets.length === 0) return;
+
+    setIsGeneratingKits(true);
+    setKitsProgress({ current: 0, total: targets.length * 2 }); // x2 por home + away
+
+    const targetIds = new Set(targets.map((t) => t.id));
+    setDrafts((prev) =>
+      prev.map((d) => (targetIds.has(d.id) ? { ...d, isResolvingLogos: true } : d))
+    );
+
+    let done = 0;
+    const updates: Map<string, { homeLogo?: string; awayLogo?: string }> = new Map();
+
+    // Genera imágenes en paralelo por equipo (máx 4 a la vez para no saturar)
+    const teamTasks: Promise<void>[] = [];
+    for (const draft of targets) {
+      // Home team kit
+      teamTasks.push(
+        (async () => {
+          try {
+            const res = await fetch('/api/ai/generate-kit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                teamName: draft.homeTeam,
+                sport: draft.sport,
+                competition: draft.competition,
+                apiKey: geminiKey,
+              }),
+            });
+            const data = await res.json();
+            if (data.success && data.imageUrl) {
+              const url = data.imageUrl;
+              const prev = updates.get(draft.id) || {};
+              updates.set(draft.id, { ...prev, homeLogo: url });
+              // Actualizar draft inmediatamente en la tabla
+              setDrafts((prev) =>
+                prev.map((d) =>
+                  d.id === draft.id ? { ...d, homeLogo: url, homeType: 'kit' as const } : d
+                )
+              );
+            } else if (data.error) {
+              setErrorMsg(data.error);
+            }
+          } catch (e: any) {
+            setErrorMsg(e.message || 'Error al conectar con la API de Gemini.');
+          }
+          done++;
+          setKitsProgress((p) => ({ ...p, current: done }));
+        })()
+      );
+
+      // Away team kit
+      teamTasks.push(
+        (async () => {
+          try {
+            const res = await fetch('/api/ai/generate-kit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                teamName: draft.awayTeam,
+                sport: draft.sport,
+                competition: draft.competition,
+                apiKey: geminiKey,
+              }),
+            });
+            const data = await res.json();
+            if (data.success && data.imageUrl) {
+              const url = data.imageUrl;
+              const prev = updates.get(draft.id) || {};
+              updates.set(draft.id, { ...prev, awayLogo: url });
+              // Actualizar draft inmediatamente en la tabla
+              setDrafts((prev) =>
+                prev.map((d) =>
+                  d.id === draft.id ? { ...d, awayLogo: url, awayType: 'kit' as const } : d
+                )
+              );
+            } else if (data.error) {
+              setErrorMsg(data.error);
+            }
+          } catch (e: any) {
+            setErrorMsg(e.message || 'Error al conectar con la API de Gemini.');
+          }
+          done++;
+          setKitsProgress((p) => ({ ...p, current: done }));
+        })()
+      );
+    }
+
+    await Promise.all(teamTasks);
+
+    // Aplicar todas las URLs generadas a los drafts
+    setDrafts((prev) =>
+      prev.map((d) => {
+        if (!targetIds.has(d.id)) return d;
+        const upd = updates.get(d.id);
+        return {
+          ...d,
+          homeLogo: upd?.homeLogo || d.homeLogo || '',
+          awayLogo: upd?.awayLogo || d.awayLogo || '',
+          homeType: 'kit' as const,
+          awayType: 'kit' as const,
+          homeLabel: 'Camiseta IA 26-27',
+          awayLabel: 'Camiseta IA 26-27',
+          isResolvingLogos: false,
+        };
+      })
+    );
+
+    setIsGeneratingKits(false);
+    setKitsProgress({ current: 0, total: 0 });
   };
 
   /** Descarga una plantilla de Excel lista con las columnas solicitadas */
@@ -231,6 +450,8 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
         id: `draft-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 6)}`,
         homeTeam: homeTeam || 'Local',
         awayTeam: awayTeam || 'Visitante',
+        homeLogo: '',
+        awayLogo: '',
         competition,
         date,
         time,
@@ -241,6 +462,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
         sport,
         analysis: '',
         isGeneratingAi: false,
+        isResolvingLogos: true,
       });
     });
 
@@ -250,6 +472,11 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
     }
 
     setDrafts((prev) => [...prev, ...newDrafts]);
+
+    // Resuelve automáticamente banderas de tenis y camisetas de fútbol/basket con IA
+    setTimeout(() => {
+      resolveLogosForDrafts(newDrafts);
+    }, 50);
   };
 
   /** Procesa archivo Excel o CSV */
@@ -379,12 +606,14 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
               name: d.homeTeam,
               shortName: d.homeTeam.slice(0, 3).toUpperCase(),
               sportId: sportObj.id,
+              logoUrl: d.homeLogo || undefined,
             },
             awayTeam: {
               id: `t-a-${Date.now()}-${index}`,
               name: d.awayTeam,
               shortName: d.awayTeam.slice(0, 3).toUpperCase(),
               sportId: sportObj.id,
+              logoUrl: d.awayLogo || undefined,
             },
             competition: d.competition || undefined,
             startTime: startTimeIso,
@@ -483,6 +712,32 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
         </div>
       </div>
 
+      {/* Configuración de Google Gemini (Imagen 3) para Camisetas Estilo Icono */}
+      <div className={styles.aiConfigBox}>
+        <div className={styles.aiConfigHeader}>
+          <span className={styles.aiIcon}>✨</span>
+          <span className={styles.aiTitle}>Google Gemini (Imagen 3) — Camisetas 3D Oficiales 2026-2027</span>
+          <span className={geminiKey ? styles.aiBadgeActive : styles.aiBadgeIdle}>
+            {geminiKey ? '🟢 Gemini Imagen 3 Activo' : '⚪ Fallback Automático'}
+          </span>
+        </div>
+        <div className={styles.aiKeyRow}>
+          <input
+            type="password"
+            className={styles.aiKeyInput}
+            placeholder="Clave API de Google Gemini (AIza...) — Consíguela 100% gratis en aistudio.google.com"
+            value={geminiKey}
+            onChange={handleGeminiKeyChange}
+          />
+          <span className={styles.aiKeyHelp}>
+            Genera camisetas estilo icono 3D con fondo oscuro y efecto cristal igual a la referencia. Consíguela gratis en{' '}
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'hsl(190 90% 60%)', textDecoration: 'underline' }}>
+              aistudio.google.com
+            </a>.
+          </span>
+        </div>
+      </div>
+
       {/* Pestañas de modo de entrada: Subir archivo vs Pegar */}
       <div className={styles.modeTabs}>
         <button
@@ -562,6 +817,34 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
             <div className={styles.previewActions}>
               <button
                 type="button"
+                className={styles.logosBulkBtn}
+                onClick={() => resolveLogosForDrafts()}
+                disabled={isBulkResolvingLogos || isGeneratingKits || isSubmitting}
+                title="Detectar banderas de tenistas con IA"
+              >
+                {isBulkResolvingLogos ? (
+                  <>⏳ Buscando banderas...</>
+                ) : (
+                  <>🏳️ Banderas Tenis</>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={styles.generateKitsBtn}
+                onClick={() => generateKitsWithAI()}
+                disabled={isGeneratingKits || isBulkResolvingLogos || isSubmitting}
+                title="Generar automáticamente camisetas 3D oficiales con la IA de Google Gemini"
+              >
+                {isGeneratingKits ? (
+                  <>✨ Generando {kitsProgress.current}/{kitsProgress.total} camisetas con Gemini...</>
+                ) : (
+                  <>✨ Generar Camisetas Gemini</>
+                )}
+              </button>
+
+              <button
+                type="button"
                 className={styles.aiBulkBtn}
                 onClick={generateAllAnalyses}
                 disabled={isBulkGenerating || isSubmitting}
@@ -603,19 +886,92 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                 {drafts.map((d) => (
                   <tr key={d.id}>
                     <td>
-                      <input
-                        className={styles.cellInput}
-                        value={d.homeTeam}
-                        placeholder="Local"
-                        onChange={(e) => updateDraftField(d.id, 'homeTeam', e.target.value)}
-                      />
-                      <span className={styles.vsBadge}>vs</span>
-                      <input
-                        className={styles.cellInput}
-                        value={d.awayTeam}
-                        placeholder="Visitante"
-                        onChange={(e) => updateDraftField(d.id, 'awayTeam', e.target.value)}
-                      />
+                      <div className={styles.teamFieldWrapper}>
+                        <div className={styles.teamInputWithLogo}>
+                          <div
+                            className={styles.miniLogoBox}
+                            title={
+                              d.homeLabel
+                                ? `${d.sport === 'tennis' ? 'Bandera: ' : 'Camiseta: '}${d.homeLabel}`
+                                : d.sport === 'tennis'
+                                ? 'Bandera de nacionalidad'
+                                : 'Camiseta oficial'
+                            }
+                          >
+                            {d.isResolvingLogos ? (
+                              <span className={styles.miniSpinner}>⏳</span>
+                            ) : d.homeLogo ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={d.homeLogo}
+                                alt={d.homeTeam}
+                                className={`${styles.miniLogoImg} ${
+                                  d.homeType === 'flag' || d.sport === 'tennis' || d.homeLogo.includes('flagcdn')
+                                    ? styles.miniLogoFlag
+                                    : styles.miniLogoKit
+                                }`}
+                              />
+                            ) : (
+                              <span className={styles.miniPlaceholder}>
+                                {d.sport === 'tennis' ? '🎾' : d.sport === 'basketball' ? '🏀' : '⚽'}
+                              </span>
+                            )}
+                          </div>
+                          <input
+                            className={styles.cellInput}
+                            value={d.homeTeam}
+                            placeholder="Local"
+                            onChange={(e) => updateDraftField(d.id, 'homeTeam', e.target.value)}
+                          />
+                        </div>
+
+                        <span className={styles.vsBadge}>vs</span>
+
+                        <div className={styles.teamInputWithLogo}>
+                          <div
+                            className={styles.miniLogoBox}
+                            title={
+                              d.awayLabel
+                                ? `${d.sport === 'tennis' ? 'Bandera: ' : 'Camiseta: '}${d.awayLabel}`
+                                : d.sport === 'tennis'
+                                ? 'Bandera de nacionalidad'
+                                : 'Camiseta oficial'
+                            }
+                          >
+                            {d.isResolvingLogos ? (
+                              <span className={styles.miniSpinner}>⏳</span>
+                            ) : d.awayLogo ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={d.awayLogo}
+                                alt={d.awayTeam}
+                                className={`${styles.miniLogoImg} ${
+                                  d.awayType === 'flag' || d.sport === 'tennis' || d.awayLogo.includes('flagcdn')
+                                    ? styles.miniLogoFlag
+                                    : styles.miniLogoKit
+                                }`}
+                              />
+                            ) : (
+                              <span className={styles.miniPlaceholder}>
+                                {d.sport === 'tennis' ? '🎾' : d.sport === 'basketball' ? '🏀' : '⚽'}
+                              </span>
+                            )}
+                          </div>
+                          <input
+                            className={styles.cellInput}
+                            value={d.awayTeam}
+                            placeholder="Visitante"
+                            onChange={(e) => updateDraftField(d.id, 'awayTeam', e.target.value)}
+                          />
+                        </div>
+
+                        {(d.homeLabel || d.awayLabel) && (
+                          <span className={styles.logoInfoBadge}>
+                            {d.sport === 'tennis' ? '🎾 ' : '🎽 '}
+                            {d.homeLabel || '—'} / {d.awayLabel || '—'}
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     <td>
@@ -682,7 +1038,25 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                       <select
                         className={styles.cellSelect}
                         value={d.sport}
-                        onChange={(e) => updateDraftField(d.id, 'sport', e.target.value)}
+                        onChange={(e) => {
+                          const newSport = e.target.value;
+                          const isTennis = newSport === 'tennis';
+                          const updated = {
+                            ...d,
+                            sport: newSport,
+                            homeLogo: isTennis ? '' : d.homeLogo,
+                            awayLogo: isTennis ? '' : d.awayLogo,
+                            homeLabel: '',
+                            awayLabel: '',
+                            homeType: (isTennis ? 'flag' : undefined) as any,
+                            awayType: (isTennis ? 'flag' : undefined) as any,
+                            isResolvingLogos: true,
+                          };
+                          setDrafts((prev) =>
+                            prev.map((item) => (item.id === d.id ? updated : item))
+                          );
+                          resolveLogosForDrafts([updated]);
+                        }}
                       >
                         <option value="football">⚽ Fútbol</option>
                         <option value="tennis">🎾 Tenis</option>

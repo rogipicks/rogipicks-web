@@ -37,6 +37,16 @@
   object-fit: cover;
 }
 
+.fixtureLogoFlag {
+  object-fit: cover;
+  transform: scale(1.06);
+}
+
+.fixtureLogoKit {
+  object-fit: contain;
+  padding: 4px;
+}
+
 .logoLetter {
   font-size: 16px;
   font-weight: 800;
