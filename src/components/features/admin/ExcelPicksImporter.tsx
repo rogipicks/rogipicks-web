@@ -145,11 +145,8 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
   const [activeInputMode, setActiveInputMode] = useState<'upload' | 'paste'>('upload');
   const [pasteText, setPasteText] = useState('');
   const [groqKey, setGroqKey] = useState('');
-  const [geminiKey, setGeminiKey] = useState('');
   const [isBulkGenerating, setIsBulkGenerating] = useState(false);
   const [isBulkResolvingLogos, setIsBulkResolvingLogos] = useState(false);
-  const [isGeneratingKits, setIsGeneratingKits] = useState(false);
-  const [kitsProgress, setKitsProgress] = useState({ current: 0, total: 0 });
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -161,9 +158,6 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
   useEffect(() => {
     const savedGroq = localStorage.getItem('rogipicks_groq_key') || localStorage.getItem('rogipicks_grok_key');
     if (savedGroq) setGroqKey(savedGroq);
-
-    const savedGemini = localStorage.getItem('rogipicks_gemini_key') || localStorage.getItem('rogipicks_google_key');
-    if (savedGemini) setGeminiKey(savedGemini);
   }, []);
 
   const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,13 +166,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
     localStorage.setItem('rogipicks_groq_key', val);
   };
 
-  const handleGeminiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setGeminiKey(val);
-    localStorage.setItem('rogipicks_gemini_key', val);
-  };
-
-  /** Resuelve banderas de tenis y camisetas de fútbol/baloncesto con IA */
+  /** Resuelve banderas de países para todos los partidos (fútbol, tenis, etc.) */
   const resolveLogosForDrafts = async (draftList?: ParsedPickDraft[]) => {
     const targets = draftList && draftList.length > 0 ? draftList : drafts;
     if (!targets || targets.length === 0) return;
@@ -217,15 +205,14 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
             prev.map((d) => {
               const resObj: any = resultsMap.get(d.id);
               if (!resObj) return { ...d, isResolvingLogos: false };
-              const isTennis = d.sport === 'tennis';
               return {
                 ...d,
-                homeLogo: isTennis ? (resObj.homeLogo || 'https://flagcdn.com/w160/es.png') : (resObj.homeLogo || d.homeLogo || ''),
-                awayLogo: isTennis ? (resObj.awayLogo || 'https://flagcdn.com/w160/es.png') : (resObj.awayLogo || d.awayLogo || ''),
-                homeLabel: resObj.homeLabel || (isTennis ? 'España' : d.homeLabel),
-                awayLabel: resObj.awayLabel || (isTennis ? 'España' : d.awayLabel),
-                homeType: isTennis ? 'flag' : (resObj.homeType || d.homeType),
-                awayType: isTennis ? 'flag' : (resObj.awayType || d.awayType),
+                homeLogo: resObj.homeLogo || d.homeLogo || 'https://flagcdn.com/w160/es.png',
+                awayLogo: resObj.awayLogo || d.awayLogo || 'https://flagcdn.com/w160/es.png',
+                homeLabel: resObj.homeLabel || d.homeLabel || 'España',
+                awayLabel: resObj.awayLabel || d.awayLabel || 'España',
+                homeType: 'flag' as const,
+                awayType: 'flag' as const,
                 isResolvingLogos: false,
               };
             })
@@ -235,143 +222,13 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
         }
       }
     } catch (err) {
-      console.error('Error al resolver logos con IA:', err);
+      console.error('Error al resolver banderas:', err);
     }
 
     setDrafts((prev) =>
       prev.map((d) => (targetIds.has(d.id) ? { ...d, isResolvingLogos: false } : d))
     );
     setIsBulkResolvingLogos(false);
-  };
-
-  /**
-   * Genera imágenes de camisetas con IA de Google Gemini para fútbol y basket.
-   * Para tenis sigue usando banderas del resolver existente.
-   */
-  const generateKitsWithAI = async (draftList?: ParsedPickDraft[]) => {
-    const targets = (draftList && draftList.length > 0 ? draftList : drafts).filter(
-      (d) => d.sport !== 'tennis'
-    );
-    const tennisTargets = (draftList && draftList.length > 0 ? draftList : drafts).filter(
-      (d) => d.sport === 'tennis'
-    );
-
-    // Para tenis: resolver banderas como siempre
-    if (tennisTargets.length > 0) {
-      resolveLogosForDrafts(tennisTargets);
-    }
-
-    if (targets.length === 0) return;
-
-    setIsGeneratingKits(true);
-    setKitsProgress({ current: 0, total: targets.length * 2 }); // x2 por home + away
-
-    const targetIds = new Set(targets.map((t) => t.id));
-    setDrafts((prev) =>
-      prev.map((d) => (targetIds.has(d.id) ? { ...d, isResolvingLogos: true } : d))
-    );
-
-    let done = 0;
-    const updates: Map<string, { homeLogo?: string; awayLogo?: string }> = new Map();
-
-    // Genera imágenes en paralelo por equipo (máx 4 a la vez para no saturar)
-    const teamTasks: Promise<void>[] = [];
-    for (const draft of targets) {
-      // Home team kit
-      teamTasks.push(
-        (async () => {
-          try {
-            const res = await fetch('/api/ai/generate-kit', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                teamName: draft.homeTeam,
-                sport: draft.sport,
-                competition: draft.competition,
-                apiKey: geminiKey,
-              }),
-            });
-            const data = await res.json();
-            if (data.success && data.imageUrl) {
-              const url = data.imageUrl;
-              const prev = updates.get(draft.id) || {};
-              updates.set(draft.id, { ...prev, homeLogo: url });
-              // Actualizar draft inmediatamente en la tabla
-              setDrafts((prev) =>
-                prev.map((d) =>
-                  d.id === draft.id ? { ...d, homeLogo: url, homeType: 'kit' as const } : d
-                )
-              );
-            } else if (data.error) {
-              setErrorMsg(data.error);
-            }
-          } catch (e: any) {
-            setErrorMsg(e.message || 'Error al conectar con la API de Gemini.');
-          }
-          done++;
-          setKitsProgress((p) => ({ ...p, current: done }));
-        })()
-      );
-
-      // Away team kit
-      teamTasks.push(
-        (async () => {
-          try {
-            const res = await fetch('/api/ai/generate-kit', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                teamName: draft.awayTeam,
-                sport: draft.sport,
-                competition: draft.competition,
-                apiKey: geminiKey,
-              }),
-            });
-            const data = await res.json();
-            if (data.success && data.imageUrl) {
-              const url = data.imageUrl;
-              const prev = updates.get(draft.id) || {};
-              updates.set(draft.id, { ...prev, awayLogo: url });
-              // Actualizar draft inmediatamente en la tabla
-              setDrafts((prev) =>
-                prev.map((d) =>
-                  d.id === draft.id ? { ...d, awayLogo: url, awayType: 'kit' as const } : d
-                )
-              );
-            } else if (data.error) {
-              setErrorMsg(data.error);
-            }
-          } catch (e: any) {
-            setErrorMsg(e.message || 'Error al conectar con la API de Gemini.');
-          }
-          done++;
-          setKitsProgress((p) => ({ ...p, current: done }));
-        })()
-      );
-    }
-
-    await Promise.all(teamTasks);
-
-    // Aplicar todas las URLs generadas a los drafts
-    setDrafts((prev) =>
-      prev.map((d) => {
-        if (!targetIds.has(d.id)) return d;
-        const upd = updates.get(d.id);
-        return {
-          ...d,
-          homeLogo: upd?.homeLogo || d.homeLogo || '',
-          awayLogo: upd?.awayLogo || d.awayLogo || '',
-          homeType: 'kit' as const,
-          awayType: 'kit' as const,
-          homeLabel: 'Camiseta IA 26-27',
-          awayLabel: 'Camiseta IA 26-27',
-          isResolvingLogos: false,
-        };
-      })
-    );
-
-    setIsGeneratingKits(false);
-    setKitsProgress({ current: 0, total: 0 });
   };
 
   /** Descarga una plantilla de Excel lista con las columnas solicitadas */
@@ -452,6 +309,10 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
         awayTeam: awayTeam || 'Visitante',
         homeLogo: '',
         awayLogo: '',
+        homeType: 'flag',
+        awayType: 'flag',
+        homeLabel: '',
+        awayLabel: '',
         competition,
         date,
         time,
@@ -473,7 +334,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
 
     setDrafts((prev) => [...prev, ...newDrafts]);
 
-    // Resuelve automáticamente banderas de tenis y camisetas de fútbol/basket con IA
+    // Resuelve automáticamente banderas de los partidos con IA
     setTimeout(() => {
       resolveLogosForDrafts(newDrafts);
     }, 50);
@@ -712,31 +573,6 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
         </div>
       </div>
 
-      {/* Configuración de Google Gemini (Imagen 3) para Camisetas Estilo Icono */}
-      <div className={styles.aiConfigBox}>
-        <div className={styles.aiConfigHeader}>
-          <span className={styles.aiIcon}>✨</span>
-          <span className={styles.aiTitle}>Google Gemini (Imagen 3) — Camisetas 3D Oficiales 2026-2027</span>
-          <span className={geminiKey ? styles.aiBadgeActive : styles.aiBadgeIdle}>
-            {geminiKey ? '🟢 Gemini Imagen 3 Activo' : '⚪ Fallback Automático'}
-          </span>
-        </div>
-        <div className={styles.aiKeyRow}>
-          <input
-            type="password"
-            className={styles.aiKeyInput}
-            placeholder="Clave API de Google Gemini (AIza...) — Consíguela 100% gratis en aistudio.google.com"
-            value={geminiKey}
-            onChange={handleGeminiKeyChange}
-          />
-          <span className={styles.aiKeyHelp}>
-            Genera camisetas estilo icono 3D con fondo oscuro y efecto cristal igual a la referencia. Consíguela gratis en{' '}
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'hsl(190 90% 60%)', textDecoration: 'underline' }}>
-              aistudio.google.com
-            </a>.
-          </span>
-        </div>
-      </div>
 
       {/* Pestañas de modo de entrada: Subir archivo vs Pegar */}
       <div className={styles.modeTabs}>
@@ -819,27 +655,13 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                 type="button"
                 className={styles.logosBulkBtn}
                 onClick={() => resolveLogosForDrafts()}
-                disabled={isBulkResolvingLogos || isGeneratingKits || isSubmitting}
-                title="Detectar banderas de tenistas con IA"
+                disabled={isBulkResolvingLogos || isSubmitting}
+                title="Detectar automáticamente las banderas de cada partido"
               >
                 {isBulkResolvingLogos ? (
                   <>⏳ Buscando banderas...</>
                 ) : (
-                  <>🏳️ Banderas Tenis</>
-                )}
-              </button>
-
-              <button
-                type="button"
-                className={styles.generateKitsBtn}
-                onClick={() => generateKitsWithAI()}
-                disabled={isGeneratingKits || isBulkResolvingLogos || isSubmitting}
-                title="Generar automáticamente camisetas 3D oficiales con la IA de Google Gemini"
-              >
-                {isGeneratingKits ? (
-                  <>✨ Generando {kitsProgress.current}/{kitsProgress.total} camisetas con Gemini...</>
-                ) : (
-                  <>✨ Generar Camisetas Gemini</>
+                  <>🏳️ Resolver Banderas</>
                 )}
               </button>
 
@@ -890,13 +712,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                         <div className={styles.teamInputWithLogo}>
                           <div
                             className={styles.miniLogoBox}
-                            title={
-                              d.homeLabel
-                                ? `${d.sport === 'tennis' ? 'Bandera: ' : 'Camiseta: '}${d.homeLabel}`
-                                : d.sport === 'tennis'
-                                ? 'Bandera de nacionalidad'
-                                : 'Camiseta oficial'
-                            }
+                            title={d.homeLabel ? `Bandera: ${d.homeLabel}` : 'Bandera del equipo o país'}
                           >
                             {d.isResolvingLogos ? (
                               <span className={styles.miniSpinner}>⏳</span>
@@ -905,11 +721,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                               <img
                                 src={d.homeLogo}
                                 alt={d.homeTeam}
-                                className={`${styles.miniLogoImg} ${
-                                  d.homeType === 'flag' || d.sport === 'tennis' || d.homeLogo.includes('flagcdn')
-                                    ? styles.miniLogoFlag
-                                    : styles.miniLogoKit
-                                }`}
+                                className={`${styles.miniLogoImg} ${styles.miniLogoFlag}`}
                               />
                             ) : (
                               <span className={styles.miniPlaceholder}>
@@ -930,13 +742,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                         <div className={styles.teamInputWithLogo}>
                           <div
                             className={styles.miniLogoBox}
-                            title={
-                              d.awayLabel
-                                ? `${d.sport === 'tennis' ? 'Bandera: ' : 'Camiseta: '}${d.awayLabel}`
-                                : d.sport === 'tennis'
-                                ? 'Bandera de nacionalidad'
-                                : 'Camiseta oficial'
-                            }
+                            title={d.awayLabel ? `Bandera: ${d.awayLabel}` : 'Bandera del equipo o país'}
                           >
                             {d.isResolvingLogos ? (
                               <span className={styles.miniSpinner}>⏳</span>
@@ -945,11 +751,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                               <img
                                 src={d.awayLogo}
                                 alt={d.awayTeam}
-                                className={`${styles.miniLogoImg} ${
-                                  d.awayType === 'flag' || d.sport === 'tennis' || d.awayLogo.includes('flagcdn')
-                                    ? styles.miniLogoFlag
-                                    : styles.miniLogoKit
-                                }`}
+                                className={`${styles.miniLogoImg} ${styles.miniLogoFlag}`}
                               />
                             ) : (
                               <span className={styles.miniPlaceholder}>
@@ -967,8 +769,7 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
 
                         {(d.homeLabel || d.awayLabel) && (
                           <span className={styles.logoInfoBadge}>
-                            {d.sport === 'tennis' ? '🎾 ' : '🎽 '}
-                            {d.homeLabel || '—'} / {d.awayLabel || '—'}
+                            🏳️ {d.homeLabel || d.awayLabel}
                           </span>
                         )}
                       </div>
@@ -1044,12 +845,12 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
                           const updated = {
                             ...d,
                             sport: newSport,
-                            homeLogo: isTennis ? '' : d.homeLogo,
-                            awayLogo: isTennis ? '' : d.awayLogo,
+                            homeLogo: '',
+                            awayLogo: '',
                             homeLabel: '',
                             awayLabel: '',
-                            homeType: (isTennis ? 'flag' : undefined) as any,
-                            awayType: (isTennis ? 'flag' : undefined) as any,
+                            homeType: 'flag' as const,
+                            awayType: 'flag' as const,
                             isResolvingLogos: true,
                           };
                           setDrafts((prev) =>

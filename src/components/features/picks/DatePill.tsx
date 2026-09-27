@@ -9,11 +9,11 @@ interface DatePillProps {
 }
 
 const DAY_NAMES = ['DO', 'LU', 'MA', 'MI', 'JU', 'VI', 'SA'];
-const MIN_DATE = new Date(2026, 8, 25); // Inicio del sitio: 25/09/2026
-const MIN_DATE_STR = '2026-09-25';
+const MIN_DATE = new Date(2026, 8, 27); // Inicio del sitio: 27/09/2026
+const MIN_DATE_STR = '2026-09-27';
 
 export const DatePill: React.FC<DatePillProps> = ({ currentDate, onDateChange }) => {
-  // Asegura que no se muestre ni maneje una fecha anterior al 25/09/2026
+  // Asegura que no se muestre ni maneje una fecha anterior al 27/09/2026
   React.useEffect(() => {
     const curZero = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()).getTime();
     const minZero = new Date(MIN_DATE.getFullYear(), MIN_DATE.getMonth(), MIN_DATE.getDate()).getTime();

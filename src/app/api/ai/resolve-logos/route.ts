@@ -98,219 +98,396 @@ const TENNIS_PLAYERS_ISO: Record<string, { code: string; country: string }> = {
   baez: { code: 'ar', country: 'Argentina' },
   etcheverry: { code: 'ar', country: 'Argentina' },
   navone: { code: 'ar', country: 'Argentina' },
-  jarry: { code: 'cl', country: 'Chile' },
   tabilo: { code: 'cl', country: 'Chile' },
+  jarry: { code: 'cl', country: 'Chile' },
   garin: { code: 'cl', country: 'Chile' },
+  auger: { code: 'ca', country: 'Canadá' },
   'auger-aliassime': { code: 'ca', country: 'Canadá' },
-  'auger aliassime': { code: 'ca', country: 'Canadá' },
   shapovalov: { code: 'ca', country: 'Canadá' },
-  diallo: { code: 'ca', country: 'Canadá' },
-  norrie: { code: 'gb', country: 'Reino Unido' },
-  draper: { code: 'gb', country: 'Reino Unido' },
-  evans: { code: 'gb', country: 'Reino Unido' },
-  murray: { code: 'gb', country: 'Reino Unido' },
   rune: { code: 'dk', country: 'Dinamarca' },
-  ruusuvuori: { code: 'fi', country: 'Finlandia' },
-  goffin: { code: 'be', country: 'Bélgica' },
+  mensik: { code: 'cz', country: 'República Checa' },
+  lehecka: { code: 'cz', country: 'República Checa' },
+  machac: { code: 'cz', country: 'República Checa' },
+  griekspoor: { code: 'nl', country: 'Países Bajos' },
+  'van de zandschulp': { code: 'nl', country: 'Países Bajos' },
   bergs: { code: 'be', country: 'Bélgica' },
-  wawrinka: { code: 'ch', country: 'Suiza' },
-  thiem: { code: 'at', country: 'Austria' },
-  ofner: { code: 'at', country: 'Austria' },
-  khachanov: { code: 'ru', country: 'Rusia' },
-  safullin: { code: 'ru', country: 'Rusia' },
-  kotov: { code: 'ru', country: 'Rusia' },
+  goffin: { code: 'be', country: 'Bélgica' },
   bublik: { code: 'kz', country: 'Kazajistán' },
   shevchenko: { code: 'kz', country: 'Kazajistán' },
   marozsan: { code: 'hu', country: 'Hungría' },
   fucsovics: { code: 'hu', country: 'Hungría' },
+  nishioka: { code: 'jp', country: 'Japón' },
+  daniel: { code: 'jp', country: 'Japón' },
+  mochizuki: { code: 'jp', country: 'Japón' },
+  nishikori: { code: 'jp', country: 'Japón' },
+  thompson: { code: 'au', country: 'Australia' },
+  popirin: { code: 'au', country: 'Australia' },
+  popyrin: { code: 'au', country: 'Australia' },
+  duckworth: { code: 'au', country: 'Australia' },
+  kokkinakis: { code: 'au', country: 'Australia' },
+  vukic: { code: 'au', country: 'Australia' },
+  purcell: { code: 'au', country: 'Australia' },
+  walton: { code: 'au', country: 'Australia' },
+  medjedovic: { code: 'rs', country: 'Serbia' },
+  kecmanovic: { code: 'rs', country: 'Serbia' },
+  lajovic: { code: 'rs', country: 'Serbia' },
+  khachanov: { code: 'ru', country: 'Rusia' },
+  kotov: { code: 'ru', country: 'Rusia' },
+  safin: { code: 'ru', country: 'Rusia' },
+  karatsev: { code: 'ru', country: 'Rusia' },
+  draper: { code: 'gb', country: 'Reino Unido' },
+  norrie: { code: 'gb', country: 'Reino Unido' },
+  evans: { code: 'gb', country: 'Reino Unido' },
+  murray: { code: 'gb', country: 'Reino Unido' },
+  peniston: { code: 'gb', country: 'Reino Unido' },
   struff: { code: 'de', country: 'Alemania' },
   altmaier: { code: 'de', country: 'Alemania' },
   hanfmann: { code: 'de', country: 'Alemania' },
   koepfer: { code: 'de', country: 'Alemania' },
-  nishioka: { code: 'jp', country: 'Japón' },
-  daniel: { code: 'jp', country: 'Japón' },
-  nishikori: { code: 'jp', country: 'Japón' },
-  kokkinakis: { code: 'au', country: 'Australia' },
-  thompson: { code: 'au', country: 'Australia' },
-  popyrin: { code: 'au', country: 'Australia' },
-  vukic: { code: 'au', country: 'Australia' },
-  mensik: { code: 'cz', country: 'República Checa' },
-  lehecka: { code: 'cz', country: 'República Checa' },
-  machac: { code: 'cz', country: 'República Checa' },
+  ofner: { code: 'at', country: 'Austria' },
+  thiem: { code: 'at', country: 'Austria' },
+  wawrinka: { code: 'ch', country: 'Suiza' },
+  stricker: { code: 'ch', country: 'Suiza' },
+  haliys: { code: 'fr', country: 'Francia' },
+  halys: { code: 'fr', country: 'Francia' },
+  rinderknech: { code: 'fr', country: 'Francia' },
+  moulet: { code: 'fr', country: 'Francia' },
+  moutet: { code: 'fr', country: 'Francia' },
   coric: { code: 'hr', country: 'Croacia' },
   cilic: { code: 'hr', country: 'Croacia' },
-  ajdukovic: { code: 'hr', country: 'Croacia' },
-  gaubas: { code: 'lt', country: 'Lituania' },
-  kym: { code: 'ch', country: 'Suiza' },
-  rocha: { code: 'pt', country: 'Portugal' },
-  faria: { code: 'pt', country: 'Portugal' },
-
-  // Top WTA
-  swiatek: { code: 'pl', country: 'Polonia' },
-  sabalenka: { code: 'by', country: 'Bielorrusia' },
-  gauff: { code: 'us', country: 'Estados Unidos' },
-  rybakina: { code: 'kz', country: 'Kazajistán' },
-  paolini: { code: 'it', country: 'Italia' },
-  pegula: { code: 'us', country: 'Estados Unidos' },
-  zheng: { code: 'cn', country: 'China' },
-  'zheng qinwen': { code: 'cn', country: 'China' },
-  vondrousova: { code: 'cz', country: 'República Checa' },
-  sakkari: { code: 'gr', country: 'Grecia' },
-  jabeur: { code: 'tn', country: 'Túnez' },
-  ostapenko: { code: 'lv', country: 'Letonia' },
-  kasatkina: { code: 'ru', country: 'Rusia' },
-  collins: { code: 'us', country: 'Estados Unidos' },
-  navarro: { code: 'us', country: 'Estados Unidos' },
-  keys: { code: 'us', country: 'Estados Unidos' },
-  kostyuk: { code: 'ua', country: 'Ucrania' },
-  svitolina: { code: 'ua', country: 'Ucrania' },
-  yastremska: { code: 'ua', country: 'Ucrania' },
-  krejcikova: { code: 'cz', country: 'República Checa' },
-  noskova: { code: 'cz', country: 'República Checa' },
-  garcia: { code: 'fr', country: 'Francia' },
-  alexandrova: { code: 'ru', country: 'Rusia' },
-  samsonova: { code: 'ru', country: 'Rusia' },
-  andreeva: { code: 'ru', country: 'Rusia' },
-  'haddad maia': { code: 'br', country: 'Brasil' },
-  raducanu: { code: 'gb', country: 'Reino Unido' },
-  boulter: { code: 'gb', country: 'Reino Unido' },
-  osaka: { code: 'jp', country: 'Japón' },
+  prizmic: { code: 'hr', country: 'Croacia' },
+  monteiro: { code: 'br', country: 'Brasil' },
+  seyboth: { code: 'br', country: 'Brasil' },
+  wild: { code: 'br', country: 'Brasil' },
+  'seyboth wild': { code: 'br', country: 'Brasil' },
+  fonseca: { code: 'br', country: 'Brasil' },
 };
 
-// Demónimos y nombres de países para búsqueda en Wikipedia
-const DEMONYMS_MAP: Record<string, { code: string; country: string }> = {
-  spanish: { code: 'es', country: 'España' },
-  spaniard: { code: 'es', country: 'España' },
+// ─── Diccionario de competiciones / ligas de fútbol ───
+const FOOTBALL_LEAGUES_ISO: Record<string, { code: string; country: string }> = {
+  // España
+  laliga: { code: 'es', country: 'España' },
+  'la liga': { code: 'es', country: 'España' },
+  'liga ea sports': { code: 'es', country: 'España' },
+  'laliga ea sports': { code: 'es', country: 'España' },
+  'laliga hypermotion': { code: 'es', country: 'España' },
+  'segunda division': { code: 'es', country: 'España' },
+  'copa del rey': { code: 'es', country: 'España' },
+  'supercopa de espana': { code: 'es', country: 'España' },
+  'primera rfef': { code: 'es', country: 'España' },
+
+  // Inglaterra
+  'premier league': { code: 'gb', country: 'Inglaterra' },
+  premier: { code: 'gb', country: 'Inglaterra' },
+  championship: { code: 'gb', country: 'Inglaterra' },
+  'fa cup': { code: 'gb', country: 'Inglaterra' },
+  'efl cup': { code: 'gb', country: 'Inglaterra' },
+  'carabao cup': { code: 'gb', country: 'Inglaterra' },
+
+  // Italia
+  'serie a': { code: 'it', country: 'Italia' },
+  'serie b': { code: 'it', country: 'Italia' },
+  'coppa italia': { code: 'it', country: 'Italia' },
+
+  // Alemania
+  bundesliga: { code: 'de', country: 'Alemania' },
+  '2. bundesliga': { code: 'de', country: 'Alemania' },
+  'dfb pokal': { code: 'de', country: 'Alemania' },
+
+  // Francia
+  'ligue 1': { code: 'fr', country: 'Francia' },
+  'ligue 2': { code: 'fr', country: 'Francia' },
+  'coupe de france': { code: 'fr', country: 'Francia' },
+
+  // Portugal & Holanda
+  'liga portugal': { code: 'pt', country: 'Portugal' },
+  'primeira liga': { code: 'pt', country: 'Portugal' },
+  eredivisie: { code: 'nl', country: 'Países Bajos' },
+
+  // Competiciones continentales
+  'champions league': { code: 'eu', country: 'Europa' },
+  'uefa champions league': { code: 'eu', country: 'Europa' },
+  'europa league': { code: 'eu', country: 'Europa' },
+  'conference league': { code: 'eu', country: 'Europa' },
+  'nations league': { code: 'eu', country: 'Europa' },
+  'copa libertadores': { code: 'un', country: 'Sudamérica' },
+  'copa sudamericana': { code: 'un', country: 'Sudamérica' },
+
+  // América & Otras ligas
+  mls: { code: 'us', country: 'Estados Unidos' },
+  'major league soccer': { code: 'us', country: 'Estados Unidos' },
+  'liga mx': { code: 'mx', country: 'México' },
+  brasileirao: { code: 'br', country: 'Brasil' },
+  'liga profesional': { code: 'ar', country: 'Argentina' },
+  'saudi pro league': { code: 'sa', country: 'Arabia Saudita' },
+  'super lig': { code: 'tr', country: 'Turquía' },
+};
+
+// ─── Diccionario extenso de clubes y selecciones de fútbol ───
+const FOOTBALL_TEAMS_ISO: Record<string, { code: string; country: string }> = {
+  // España (Primera y Segunda División)
+  'real madrid': { code: 'es', country: 'España' },
+  madrid: { code: 'es', country: 'España' },
+  barcelona: { code: 'es', country: 'España' },
+  'fc barcelona': { code: 'es', country: 'España' },
+  barca: { code: 'es', country: 'España' },
+  'atletico de madrid': { code: 'es', country: 'España' },
+  'atletico madrid': { code: 'es', country: 'España' },
+  atletico: { code: 'es', country: 'España' },
+  atleti: { code: 'es', country: 'España' },
+  'athletic club': { code: 'es', country: 'España' },
+  'athletic bilbao': { code: 'es', country: 'España' },
+  athletic: { code: 'es', country: 'España' },
+  bilbao: { code: 'es', country: 'España' },
+  'real sociedad': { code: 'es', country: 'España' },
+  sociedad: { code: 'es', country: 'España' },
+  'la real': { code: 'es', country: 'España' },
+  sevilla: { code: 'es', country: 'España' },
+  'sevilla fc': { code: 'es', country: 'España' },
+  'real betis': { code: 'es', country: 'España' },
+  betis: { code: 'es', country: 'España' },
+  valencia: { code: 'es', country: 'España' },
+  'valencia cf': { code: 'es', country: 'España' },
+  villarreal: { code: 'es', country: 'España' },
+  celta: { code: 'es', country: 'España' },
+  'celta de vigo': { code: 'es', country: 'España' },
+  'celta vigo': { code: 'es', country: 'España' },
+  osasuna: { code: 'es', country: 'España' },
+  getafe: { code: 'es', country: 'España' },
+  'rayo vallecano': { code: 'es', country: 'España' },
+  rayo: { code: 'es', country: 'España' },
+  girona: { code: 'es', country: 'España' },
+  espanyol: { code: 'es', country: 'España' },
+  'rcd espanyol': { code: 'es', country: 'España' },
+  mallorca: { code: 'es', country: 'España' },
+  'rcd mallorca': { code: 'es', country: 'España' },
+  alaves: { code: 'es', country: 'España' },
+  'deportivo alaves': { code: 'es', country: 'España' },
+  'las palmas': { code: 'es', country: 'España' },
+  'ud las palmas': { code: 'es', country: 'España' },
+  leganes: { code: 'es', country: 'España' },
+  'cd leganes': { code: 'es', country: 'España' },
+  valladolid: { code: 'es', country: 'España' },
+  'real valladolid': { code: 'es', country: 'España' },
+  'sporting de gijon': { code: 'es', country: 'España' },
+  'sporting gijon': { code: 'es', country: 'España' },
+  sporting: { code: 'es', country: 'España' },
+  oviedo: { code: 'es', country: 'España' },
+  'real oviedo': { code: 'es', country: 'España' },
+  zaragoza: { code: 'es', country: 'España' },
+  'real zaragoza': { code: 'es', country: 'España' },
+  levante: { code: 'es', country: 'España' },
+  elche: { code: 'es', country: 'España' },
+  tenerife: { code: 'es', country: 'España' },
+  cadiz: { code: 'es', country: 'España' },
+  almeria: { code: 'es', country: 'España' },
+  granada: { code: 'es', country: 'España' },
+  malaga: { code: 'es', country: 'España' },
+  racing: { code: 'es', country: 'España' },
+  'racing santander': { code: 'es', country: 'España' },
+  eibar: { code: 'es', country: 'España' },
+  huesca: { code: 'es', country: 'España' },
+  cartagena: { code: 'es', country: 'España' },
+  burgos: { code: 'es', country: 'España' },
+  albacete: { code: 'es', country: 'España' },
+  cordoba: { code: 'es', country: 'España' },
+  deportivo: { code: 'es', country: 'España' },
+  'deportivo de la coruna': { code: 'es', country: 'España' },
+  castellon: { code: 'es', country: 'España' },
+  mirandes: { code: 'es', country: 'España' },
+  eldense: { code: 'es', country: 'España' },
+
+  // Inglaterra (Premier League)
+  'manchester city': { code: 'gb', country: 'Inglaterra' },
+  'man city': { code: 'gb', country: 'Inglaterra' },
+  mancity: { code: 'gb', country: 'Inglaterra' },
+  'manchester united': { code: 'gb', country: 'Inglaterra' },
+  'man united': { code: 'gb', country: 'Inglaterra' },
+  'man utd': { code: 'gb', country: 'Inglaterra' },
+  arsenal: { code: 'gb', country: 'Inglaterra' },
+  liverpool: { code: 'gb', country: 'Inglaterra' },
+  chelsea: { code: 'gb', country: 'Inglaterra' },
+  tottenham: { code: 'gb', country: 'Inglaterra' },
+  'tottenham hotspur': { code: 'gb', country: 'Inglaterra' },
+  spurs: { code: 'gb', country: 'Inglaterra' },
+  'aston villa': { code: 'gb', country: 'Inglaterra' },
+  newcastle: { code: 'gb', country: 'Inglaterra' },
+  'newcastle united': { code: 'gb', country: 'Inglaterra' },
+  brighton: { code: 'gb', country: 'Inglaterra' },
+  'west ham': { code: 'gb', country: 'Inglaterra' },
+  'west ham united': { code: 'gb', country: 'Inglaterra' },
+  everton: { code: 'gb', country: 'Inglaterra' },
+  wolves: { code: 'gb', country: 'Inglaterra' },
+  wolverhampton: { code: 'gb', country: 'Inglaterra' },
+  'crystal palace': { code: 'gb', country: 'Inglaterra' },
+  brentford: { code: 'gb', country: 'Inglaterra' },
+  fulham: { code: 'gb', country: 'Inglaterra' },
+  bournemouth: { code: 'gb', country: 'Inglaterra' },
+  'nottingham forest': { code: 'gb', country: 'Inglaterra' },
+  leicester: { code: 'gb', country: 'Inglaterra' },
+  'leicester city': { code: 'gb', country: 'Inglaterra' },
+  southampton: { code: 'gb', country: 'Inglaterra' },
+  ipswich: { code: 'gb', country: 'Inglaterra' },
+  leeds: { code: 'gb', country: 'Inglaterra' },
+  sunderland: { code: 'gb', country: 'Inglaterra' },
+
+  // Italia (Serie A)
+  inter: { code: 'it', country: 'Italia' },
+  'inter milan': { code: 'it', country: 'Italia' },
+  internazionale: { code: 'it', country: 'Italia' },
+  milan: { code: 'it', country: 'Italia' },
+  'ac milan': { code: 'it', country: 'Italia' },
+  juventus: { code: 'it', country: 'Italia' },
+  juve: { code: 'it', country: 'Italia' },
+  napoli: { code: 'it', country: 'Italia' },
+  roma: { code: 'it', country: 'Italia' },
+  'as roma': { code: 'it', country: 'Italia' },
+  lazio: { code: 'it', country: 'Italia' },
+  atalanta: { code: 'it', country: 'Italia' },
+  fiorentina: { code: 'it', country: 'Italia' },
+  torino: { code: 'it', country: 'Italia' },
+  bologna: { code: 'it', country: 'Italia' },
+  udinese: { code: 'it', country: 'Italia' },
+  genoa: { code: 'it', country: 'Italia' },
+  monza: { code: 'it', country: 'Italia' },
+  cagliari: { code: 'it', country: 'Italia' },
+  verona: { code: 'it', country: 'Italia' },
+  empoli: { code: 'it', country: 'Italia' },
+  parma: { code: 'it', country: 'Italia' },
+  como: { code: 'it', country: 'Italia' },
+  lecce: { code: 'it', country: 'Italia' },
+
+  // Alemania (Bundesliga)
+  bayern: { code: 'de', country: 'Alemania' },
+  'bayern munich': { code: 'de', country: 'Alemania' },
+  'bayern munchen': { code: 'de', country: 'Alemania' },
+  dortmund: { code: 'de', country: 'Alemania' },
+  'borussia dortmund': { code: 'de', country: 'Alemania' },
+  bvb: { code: 'de', country: 'Alemania' },
+  'bayer leverkusen': { code: 'de', country: 'Alemania' },
+  leverkusen: { code: 'de', country: 'Alemania' },
+  'rb leipzig': { code: 'de', country: 'Alemania' },
+  leipzig: { code: 'de', country: 'Alemania' },
+  'eintracht frankfurt': { code: 'de', country: 'Alemania' },
+  frankfurt: { code: 'de', country: 'Alemania' },
+  stuttgart: { code: 'de', country: 'Alemania' },
+  wolfsburg: { code: 'de', country: 'Alemania' },
+  freiburg: { code: 'de', country: 'Alemania' },
+  'werder bremen': { code: 'de', country: 'Alemania' },
+  'borussia monchengladbach': { code: 'de', country: 'Alemania' },
+  gladbach: { code: 'de', country: 'Alemania' },
+  'union berlin': { code: 'de', country: 'Alemania' },
+  mainz: { code: 'de', country: 'Alemania' },
+  augsburg: { code: 'de', country: 'Alemania' },
+  heidenheim: { code: 'de', country: 'Alemania' },
+  'st pauli': { code: 'de', country: 'Alemania' },
+
+  // Francia (Ligue 1)
+  psg: { code: 'fr', country: 'Francia' },
+  'paris saint-germain': { code: 'fr', country: 'Francia' },
+  'paris saint germain': { code: 'fr', country: 'Francia' },
+  marseille: { code: 'fr', country: 'Francia' },
+  'olympique marseille': { code: 'fr', country: 'Francia' },
+  om: { code: 'fr', country: 'Francia' },
+  lyon: { code: 'fr', country: 'Francia' },
+  'olympique lyon': { code: 'fr', country: 'Francia' },
+  monaco: { code: 'fr', country: 'Francia' },
+  'as monaco': { code: 'fr', country: 'Francia' },
+  lille: { code: 'fr', country: 'Francia' },
+  losc: { code: 'fr', country: 'Francia' },
+  rennes: { code: 'fr', country: 'Francia' },
+  nice: { code: 'fr', country: 'Francia' },
+  lens: { code: 'fr', country: 'Francia' },
+  brest: { code: 'fr', country: 'Francia' },
+  strasbourg: { code: 'fr', country: 'Francia' },
+  toulouse: { code: 'fr', country: 'Francia' },
+  nantes: { code: 'fr', country: 'Francia' },
+
+  // Portugal
+  benfica: { code: 'pt', country: 'Portugal' },
+  porto: { code: 'pt', country: 'Portugal' },
+  'fc porto': { code: 'pt', country: 'Portugal' },
+  'sporting cp': { code: 'pt', country: 'Portugal' },
+  'sporting de portugal': { code: 'pt', country: 'Portugal' },
+  braga: { code: 'pt', country: 'Portugal' },
+
+  // Países Bajos
+  ajax: { code: 'nl', country: 'Países Bajos' },
+  psv: { code: 'nl', country: 'Países Bajos' },
+  'psv eindhoven': { code: 'nl', country: 'Países Bajos' },
+  feyenoord: { code: 'nl', country: 'Países Bajos' },
+
+  // Sudamérica
+  boca: { code: 'ar', country: 'Argentina' },
+  'boca juniors': { code: 'ar', country: 'Argentina' },
+  river: { code: 'ar', country: 'Argentina' },
+  'river plate': { code: 'ar', country: 'Argentina' },
+  flamengo: { code: 'br', country: 'Brasil' },
+  palmeiras: { code: 'br', country: 'Brasil' },
+  'sao paulo': { code: 'br', country: 'Brasil' },
+  corinthians: { code: 'br', country: 'Brasil' },
+
+  // Selecciones
+  espana: { code: 'es', country: 'España' },
   spain: { code: 'es', country: 'España' },
-  french: { code: 'fr', country: 'Francia' },
+  francia: { code: 'fr', country: 'Francia' },
   france: { code: 'fr', country: 'Francia' },
-  italian: { code: 'it', country: 'Italia' },
-  italy: { code: 'it', country: 'Italia' },
-  german: { code: 'de', country: 'Alemania' },
+  inglaterra: { code: 'gb', country: 'Inglaterra' },
+  england: { code: 'gb', country: 'Inglaterra' },
+  alemania: { code: 'de', country: 'Alemania' },
   germany: { code: 'de', country: 'Alemania' },
-  american: { code: 'us', country: 'Estados Unidos' },
-  'united states': { code: 'us', country: 'Estados Unidos' },
-  usa: { code: 'us', country: 'Estados Unidos' },
-  british: { code: 'gb', country: 'Reino Unido' },
-  english: { code: 'gb', country: 'Reino Unido' },
-  scottish: { code: 'gb', country: 'Reino Unido' },
-  'united kingdom': { code: 'gb', country: 'Reino Unido' },
-  australian: { code: 'au', country: 'Australia' },
-  australia: { code: 'au', country: 'Australia' },
-  argentine: { code: 'ar', country: 'Argentina' },
-  argentinian: { code: 'ar', country: 'Argentina' },
-  argentina: { code: 'ar', country: 'Argentina' },
-  brazilian: { code: 'br', country: 'Brasil' },
-  brazil: { code: 'br', country: 'Brasil' },
-  chinese: { code: 'cn', country: 'China' },
-  china: { code: 'cn', country: 'China' },
-  japanese: { code: 'jp', country: 'Japón' },
-  japan: { code: 'jp', country: 'Japón' },
-  russian: { code: 'ru', country: 'Rusia' },
-  russia: { code: 'ru', country: 'Rusia' },
-  serbian: { code: 'rs', country: 'Serbia' },
-  serbia: { code: 'rs', country: 'Serbia' },
-  croatian: { code: 'hr', country: 'Croacia' },
-  croatia: { code: 'hr', country: 'Croacia' },
-  czech: { code: 'cz', country: 'República Checa' },
-  'czech republic': { code: 'cz', country: 'República Checa' },
-  polish: { code: 'pl', country: 'Polonia' },
-  poland: { code: 'pl', country: 'Polonia' },
-  ukrainian: { code: 'ua', country: 'Ucrania' },
-  ukraine: { code: 'ua', country: 'Ucrania' },
-  portuguese: { code: 'pt', country: 'Portugal' },
+  italia: { code: 'it', country: 'Italia' },
+  italy: { code: 'it', country: 'Italia' },
   portugal: { code: 'pt', country: 'Portugal' },
-  swiss: { code: 'ch', country: 'Suiza' },
-  switzerland: { code: 'ch', country: 'Suiza' },
-  austrian: { code: 'at', country: 'Austria' },
-  austria: { code: 'at', country: 'Austria' },
-  dutch: { code: 'nl', country: 'Países Bajos' },
+  argentina: { code: 'ar', country: 'Argentina' },
+  brasil: { code: 'br', country: 'Brasil' },
+  brazil: { code: 'br', country: 'Brasil' },
+  'paises bajos': { code: 'nl', country: 'Países Bajos' },
+  holanda: { code: 'nl', country: 'Países Bajos' },
   netherlands: { code: 'nl', country: 'Países Bajos' },
-  belgian: { code: 'be', country: 'Bélgica' },
-  belgium: { code: 'be', country: 'Bélgica' },
-  greek: { code: 'gr', country: 'Grecia' },
-  greece: { code: 'gr', country: 'Grecia' },
-  bulgarian: { code: 'bg', country: 'Bulgaria' },
-  bulgaria: { code: 'bg', country: 'Bulgaria' },
-  romanian: { code: 'ro', country: 'Rumanía' },
-  romania: { code: 'ro', country: 'Rumanía' },
-  hungarian: { code: 'hu', country: 'Hungría' },
-  hungary: { code: 'hu', country: 'Hungría' },
-  lithuanian: { code: 'lt', country: 'Lituania' },
-  lithuania: { code: 'lt', country: 'Lituania' },
-  kazakh: { code: 'kz', country: 'Kazajistán' },
-  kazakhstani: { code: 'kz', country: 'Kazajistán' },
-  chilean: { code: 'cl', country: 'Chile' },
-  chile: { code: 'cl', country: 'Chile' },
-  colombian: { code: 'co', country: 'Colombia' },
+  croacia: { code: 'hr', country: 'Croacia' },
+  uruguay: { code: 'uy', country: 'Uruguay' },
   colombia: { code: 'co', country: 'Colombia' },
-  canadian: { code: 'ca', country: 'Canadá' },
-  canada: { code: 'ca', country: 'Canadá' },
-  norwegian: { code: 'no', country: 'Noruega' },
-  danish: { code: 'dk', country: 'Dinamarca' },
-  finnish: { code: 'fi', country: 'Finlandia' },
-  swedish: { code: 'se', country: 'Suecia' },
-  slovak: { code: 'sk', country: 'Eslovaquia' },
-  slovenian: { code: 'si', country: 'Eslovenia' },
-  tunisian: { code: 'tn', country: 'Túnez' },
-  mexican: { code: 'mx', country: 'México' },
+  marruecos: { code: 'ma', country: 'Marruecos' },
+  japon: { code: 'jp', country: 'Japón' },
+  eeuu: { code: 'us', country: 'Estados Unidos' },
+  usa: { code: 'us', country: 'Estados Unidos' },
 };
 
-// ─── Camisetas oficiales directas temporada 2026-2027 (Estilo Icono) ───
-const CURATED_KITS: Record<string, string> = {
-  // Fútbol 2026-2027 (Estilo Icono)
-  'real madrid': '/images/kits/real-madrid-26-27.jpg',
-  madrid: '/images/kits/real-madrid-26-27.jpg',
-  barcelona: '/images/kits/barcelona-26-27.jpg',
-  'fc barcelona': '/images/kits/barcelona-26-27.jpg',
-  barca: '/images/kits/barcelona-26-27.jpg',
-  'atletico madrid': '/images/kits/atletico-26-27.jpg',
-  'atletico de madrid': '/images/kits/atletico-26-27.jpg',
-  atleti: '/images/kits/atletico-26-27.jpg',
-  'manchester city': '/images/kits/mancity-26-27.jpg',
-  'man city': '/images/kits/mancity-26-27.jpg',
-  mancity: '/images/kits/mancity-26-27.jpg',
-  arsenal: '/images/kits/arsenal-26-27.jpg',
-  liverpool: '/images/kits/liverpool-26-27.jpg',
-  'paris saint-germain': '/images/kits/psg-26-27.jpg',
-  'paris saint germain': '/images/kits/psg-26-27.jpg',
-  psg: '/images/kits/psg-26-27.jpg',
-  'manchester united': 'https://r2.thesportsdb.com/images/media/team/equipment/j1q9q11750591349.png',
-  chelsea: 'https://r2.thesportsdb.com/images/media/team/equipment/0h36v21750591207.png',
-  'bayern munich': 'https://r2.thesportsdb.com/images/media/team/equipment/v8b3j01750591179.png',
-  'bayern munchen': 'https://r2.thesportsdb.com/images/media/team/equipment/v8b3j01750591179.png',
-  'borussia dortmund': 'https://r2.thesportsdb.com/images/media/team/equipment/x00x821750591195.png',
-  dortmund: 'https://r2.thesportsdb.com/images/media/team/equipment/x00x821750591195.png',
-  juventus: 'https://r2.thesportsdb.com/images/media/team/equipment/e9h9h31750591280.png',
-  'inter milan': 'https://r2.thesportsdb.com/images/media/team/equipment/b7o9o11750591268.png',
-  inter: 'https://r2.thesportsdb.com/images/media/team/equipment/b7o9o11750591268.png',
-  'ac milan': 'https://r2.thesportsdb.com/images/media/team/equipment/q5l0o41750591336.png',
-  milan: 'https://r2.thesportsdb.com/images/media/team/equipment/q5l0o41750591336.png',
-  tottenham: 'https://r2.thesportsdb.com/images/media/team/equipment/s3z1s81750591375.png',
-  'aston villa': 'https://r2.thesportsdb.com/images/media/team/equipment/j0k8o31750591162.png',
-  newcastle: 'https://r2.thesportsdb.com/images/media/team/equipment/b9q8o11750591361.png',
-
-  // Baloncesto 2026-2027 (Estilo Icono)
-  'los angeles lakers': '/images/kits/lakers-26-27.jpg',
-  lakers: '/images/kits/lakers-26-27.jpg',
-  'boston celtics': '/images/kits/celtics-26-27.jpg',
-  celtics: '/images/kits/celtics-26-27.jpg',
-  'golden state warriors': '/images/kits/warriors-26-27.jpg',
-  warriors: '/images/kits/warriors-26-27.jpg',
-  'chicago bulls': 'https://r2.thesportsdb.com/images/media/team/equipment/dsv06i1507043743.png',
-  bulls: 'https://r2.thesportsdb.com/images/media/team/equipment/dsv06i1507043743.png',
-  'miami heat': 'https://r2.thesportsdb.com/images/media/team/equipment/9z11641507048039.png',
-  heat: 'https://r2.thesportsdb.com/images/media/team/equipment/9z11641507048039.png',
-  'milwaukee bucks': 'https://r2.thesportsdb.com/images/media/team/equipment/m2w14q1507048473.png',
-  bucks: 'https://r2.thesportsdb.com/images/media/team/equipment/m2w14q1507048473.png',
-  'dallas mavericks': 'https://r2.thesportsdb.com/images/media/team/equipment/991vwt1507044565.png',
-  mavericks: 'https://r2.thesportsdb.com/images/media/team/equipment/991vwt1507044565.png',
-  'new york knicks': 'https://r2.thesportsdb.com/images/media/team/equipment/wspqyy1507049449.png',
-  knicks: 'https://r2.thesportsdb.com/images/media/team/equipment/wspqyy1507049449.png',
-  'denver nuggets': 'https://r2.thesportsdb.com/images/media/team/equipment/j129z61507045136.png',
-  nuggets: 'https://r2.thesportsdb.com/images/media/team/equipment/j129z61507045136.png',
-  'philadelphia 76ers': 'https://r2.thesportsdb.com/images/media/team/equipment/uqvxyv1507049755.png',
-  'phoenix suns': 'https://r2.thesportsdb.com/images/media/team/equipment/yvssvx1507049977.png',
+// ─── Diccionario de Baloncesto (NBA / ACB) ───
+const BASKETBALL_TEAMS_ISO: Record<string, { code: string; country: string }> = {
+  lakers: { code: 'us', country: 'Estados Unidos' },
+  'los angeles lakers': { code: 'us', country: 'Estados Unidos' },
+  celtics: { code: 'us', country: 'Estados Unidos' },
+  'boston celtics': { code: 'us', country: 'Estados Unidos' },
+  warriors: { code: 'us', country: 'Estados Unidos' },
+  'golden state warriors': { code: 'us', country: 'Estados Unidos' },
+  bulls: { code: 'us', country: 'Estados Unidos' },
+  'chicago bulls': { code: 'us', country: 'Estados Unidos' },
+  heat: { code: 'us', country: 'Estados Unidos' },
+  'miami heat': { code: 'us', country: 'Estados Unidos' },
+  bucks: { code: 'us', country: 'Estados Unidos' },
+  mavericks: { code: 'us', country: 'Estados Unidos' },
+  knicks: { code: 'us', country: 'Estados Unidos' },
+  nuggets: { code: 'us', country: 'Estados Unidos' },
+  suns: { code: 'us', country: 'Estados Unidos' },
+  clippers: { code: 'us', country: 'Estados Unidos' },
+  spurs: { code: 'us', country: 'Estados Unidos' },
+  thunder: { code: 'us', country: 'Estados Unidos' },
+  wolves: { code: 'us', country: 'Estados Unidos' },
+  sixers: { code: 'us', country: 'Estados Unidos' },
+  'real madrid baloncesto': { code: 'es', country: 'España' },
+  'barcelona basquet': { code: 'es', country: 'España' },
+  baskonia: { code: 'es', country: 'España' },
+  unicaja: { code: 'es', country: 'España' },
+  valencia: { code: 'es', country: 'España' },
+  panathinaikos: { code: 'gr', country: 'Grecia' },
+  olympiacos: { code: 'gr', country: 'Grecia' },
+  fenerbahce: { code: 'tr', country: 'Turquía' },
+  monaco: { code: 'fr', country: 'Francia' },
+  maccabi: { code: 'il', country: 'Israel' },
+  partizan: { code: 'rs', country: 'Serbia' },
+  'estrella roja': { code: 'rs', country: 'Serbia' },
 };
 
 /** Normaliza texto quitando tildes y signos */
@@ -322,33 +499,32 @@ function cleanStr(s: string): string {
     .trim();
 }
 
-/**
- * 1. Resuelve la bandera de un tenista desde el diccionario local
- */
-function resolveFromDictionary(playerName: string): { logoUrl: string; country: string } | null {
-  const clean = cleanStr(playerName);
+/** Resuelve la bandera buscando en un diccionario clave-valor */
+function lookupDictionary(
+  name: string,
+  dict: Record<string, { code: string; country: string }>
+): { logoUrl: string; country: string } | null {
+  const clean = cleanStr(name);
   if (!clean) return null;
 
-  // Coincidencia exacta o contenida
-  for (const [key, val] of Object.entries(TENNIS_PLAYERS_ISO)) {
+  // 1. Coincidencia exacta o contenida directa
+  if (dict[clean]) {
+    const val = dict[clean];
+    return { logoUrl: `https://flagcdn.com/w160/${val.code.toLowerCase()}.png`, country: val.country };
+  }
+  for (const [key, val] of Object.entries(dict)) {
     if (clean === key || clean.includes(key) || key.includes(clean)) {
-      return {
-        logoUrl: `https://flagcdn.com/w160/${val.code.toLowerCase()}.png`,
-        country: val.country,
-      };
+      return { logoUrl: `https://flagcdn.com/w160/${val.code.toLowerCase()}.png`, country: val.country };
     }
   }
 
-  // Comprobar palabras / apellidos individuales
+  // 2. Palabras clave individuales
   const words = clean.split(/\s+/);
   for (const w of words) {
     if (w.length < 3) continue;
-    if (TENNIS_PLAYERS_ISO[w]) {
-      const val = TENNIS_PLAYERS_ISO[w];
-      return {
-        logoUrl: `https://flagcdn.com/w160/${val.code.toLowerCase()}.png`,
-        country: val.country,
-      };
+    if (dict[w]) {
+      const val = dict[w];
+      return { logoUrl: `https://flagcdn.com/w160/${val.code.toLowerCase()}.png`, country: val.country };
     }
   }
 
@@ -356,99 +532,74 @@ function resolveFromDictionary(playerName: string): { logoUrl: string; country: 
 }
 
 /**
- * 2. Consulta en Wikipedia la nacionalidad del tenista en tiempo real
+ * Resuelve la bandera para fútbol:
+ * 1. Busca en el diccionario de equipos de fútbol
+ * 2. Si hay competición indicada, busca en ligas
+ * 3. Busca en tenis/países generales
+ * 4. Consulta a Groq AI si está configurado
+ * 5. Por defecto bandera de España
  */
-async function resolveViaWikipedia(playerName: string): Promise<{ logoUrl: string; country: string } | null> {
-  try {
-    const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
-      playerName + ' tennis'
-    )}&format=json`;
+async function resolveFootballFlag(
+  teamName: string,
+  competition?: string,
+  apiKey?: string
+): Promise<{ logoUrl: string; country: string }> {
+  // 1. Diccionario de equipos
+  const teamMatch = lookupDictionary(teamName, FOOTBALL_TEAMS_ISO);
+  if (teamMatch) return teamMatch;
 
-    const res = await fetch(url, {
-      headers: { 'User-Agent': 'RogiPicks/1.0 (contact@rogipicks.com)' },
-      next: { revalidate: 86400 },
-    });
-
-    if (!res.ok) return null;
-    const data = await res.json();
-    const hits = data?.query?.search || [];
-
-    for (const h of hits) {
-      const text = `${h.title} ${h.snippet}`.toLowerCase().replace(/<[^>]+>/g, '');
-      for (const [dem, info] of Object.entries(DEMONYMS_MAP)) {
-        const reg = new RegExp(`\\b${dem}\\b`, 'i');
-        if (reg.test(text)) {
-          return {
-            logoUrl: `https://flagcdn.com/w160/${info.code.toLowerCase()}.png`,
-            country: info.country,
-          };
-        }
-      }
-    }
-  } catch (err) {
-    // Continuar si falla la red puntual de Wikipedia
+  // 2. Diccionario de competiciones / ligas
+  if (competition) {
+    const compMatch = lookupDictionary(competition, FOOTBALL_LEAGUES_ISO);
+    if (compMatch) return compMatch;
   }
-  return null;
+
+  // 3. Diccionario general de países / tenis
+  const genMatch = lookupDictionary(teamName, TENNIS_PLAYERS_ISO);
+  if (genMatch) return genMatch;
+
+  // 4. Consulta IA rápida con Groq
+  const aiMatch = await resolveCountryWithGroq(teamName, 'football', competition, apiKey);
+  if (aiMatch) return aiMatch;
+
+  // 5. Fallback por defecto España
+  return {
+    logoUrl: 'https://flagcdn.com/w160/es.png',
+    country: 'España',
+  };
 }
 
 /**
- * 3. Consulta en TheSportsDB la camiseta actual (strEquipment) o escudo (strBadge) para fútbol/basket
+ * Resuelve la bandera para baloncesto:
  */
-async function searchTheSportsDBKit(teamName: string): Promise<string | null> {
-  const clean = cleanStr(teamName);
+async function resolveBasketballFlag(
+  teamName: string,
+  competition?: string,
+  apiKey?: string
+): Promise<{ logoUrl: string; country: string }> {
+  const basketMatch = lookupDictionary(teamName, BASKETBALL_TEAMS_ISO);
+  if (basketMatch) return basketMatch;
 
-  if (CURATED_KITS[clean]) {
-    return CURATED_KITS[clean];
-  }
-  for (const [k, url] of Object.entries(CURATED_KITS)) {
-    if (clean.includes(k) || k.includes(clean)) {
-      return url;
-    }
-  }
-
-  const queries: string[] = [
-    teamName,
-    teamName.replace(/[-_]/g, ' '),
-    teamName.replace(/^(fc|cf|cd|real|club|deportivo|sporting|ud|baloncesto|basket)\s+/i, ''),
-    teamName.replace(/\s+(fc|cf|bc|basket|baloncesto)$/i, ''),
-  ];
-
-  const words = clean.split(/\s+/).filter((w) => w.length > 3);
-  if (words.length > 0 && !queries.includes(words[0])) {
-    queries.push(words[0]);
+  if (competition && cleanStr(competition).includes('nba')) {
+    return { logoUrl: 'https://flagcdn.com/w160/us.png', country: 'Estados Unidos' };
   }
 
-  for (const q of queries) {
-    if (!q || q.length < 3) continue;
-    try {
-      const url = `https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(q.trim())}`;
-      const res = await fetch(url, { next: { revalidate: 86400 } });
-      if (!res.ok) continue;
-      const data = await res.json();
-      if (!data?.teams || data.teams.length === 0) continue;
+  const aiMatch = await resolveCountryWithGroq(teamName, 'basketball', competition, apiKey);
+  if (aiMatch) return aiMatch;
 
-      const withEquipment = data.teams.find((t: any) => t.strEquipment);
-      if (withEquipment?.strEquipment) {
-        return withEquipment.strEquipment;
-      }
-
-      const withBadge = data.teams.find((t: any) => t.strBadge);
-      if (withBadge?.strBadge) {
-        return withBadge.strBadge;
-      }
-    } catch {
-      // Ignorar
-    }
-  }
-
-  return null;
+  return {
+    logoUrl: 'https://flagcdn.com/w160/es.png',
+    country: 'España',
+  };
 }
 
 /**
- * 4. Consulta a Groq AI (Llama) si las capas anteriores no encontraron la nacionalidad
+ * Consulta a Groq AI (Llama 3.1) para identificar el país de cualquier equipo o jugador
  */
-async function resolveTennisWithGroq(
-  playerName: string,
+async function resolveCountryWithGroq(
+  name: string,
+  sport: string,
+  competition?: string,
   apiKey?: string
 ): Promise<{ logoUrl: string; country: string } | null> {
   const groqKey =
@@ -472,9 +623,10 @@ async function resolveTennisWithGroq(
         messages: [
           {
             role: 'system',
-            content: 'Responde estrictamente con un JSON con el código ISO de 2 letras y nombre del país en español de este tenista. Ej: {"code": "es", "country": "España"}',
+            content:
+              'Eres un asistente deportivo. Responde estrictamente con un JSON con el código de 2 letras ISO del país principal de este equipo, jugador o liga y el nombre del país en español. Ej: {"code": "es", "country": "España"}',
           },
-          { role: 'user', content: `Tenista: ${playerName}` },
+          { role: 'user', content: `Deporte: ${sport}. Competición: ${competition || 'General'}. Entidad: ${name}` },
         ],
         temperature: 0.1,
         response_format: { type: 'json_object' },
@@ -487,7 +639,7 @@ async function resolveTennisWithGroq(
       if (content) {
         const parsed = JSON.parse(content);
         if (parsed?.code) {
-          const code = parsed.code.toLowerCase();
+          const code = parsed.code.toLowerCase().trim();
           return {
             logoUrl: `https://flagcdn.com/w160/${code}.png`,
             country: parsed.country || code.toUpperCase(),
@@ -496,7 +648,7 @@ async function resolveTennisWithGroq(
       }
     }
   } catch {
-    // Ignorar
+    // Continuar con fallback si falla la llamada
   }
   return null;
 }
@@ -516,34 +668,24 @@ export async function POST(req: Request) {
         let awayLogo = '';
         let homeLabel = '';
         let awayLabel = '';
-        let homeType: 'flag' | 'kit' | 'badge' = 'badge';
-        let awayType: 'flag' | 'kit' | 'badge' = 'badge';
 
         if (item.sport === 'tennis') {
-          // ─── TENIS: SIEMPRE BANDERAS DE PAÍSES, NUNCA ESCUDOS ───
-          homeType = 'flag';
-          awayType = 'flag';
-
-          // 1. Resolver jugador local
+          // ─── TENIS: Banderas de países de cada tenista ───
           const localHome =
-            resolveFromDictionary(item.homeTeam) ||
-            (await resolveViaWikipedia(item.homeTeam)) ||
-            (await resolveTennisWithGroq(item.homeTeam, apiKey));
+            lookupDictionary(item.homeTeam, TENNIS_PLAYERS_ISO) ||
+            (await resolveCountryWithGroq(item.homeTeam, 'tennis', item.competition, apiKey));
 
           if (localHome) {
             homeLogo = localHome.logoUrl;
             homeLabel = localHome.country;
           } else {
-            // Si no se encuentra, por defecto bandera española si el torneo es nacional o bandera internacional
             homeLogo = 'https://flagcdn.com/w160/es.png';
             homeLabel = 'España';
           }
 
-          // 2. Resolver jugador visitante
           const localAway =
-            resolveFromDictionary(item.awayTeam) ||
-            (await resolveViaWikipedia(item.awayTeam)) ||
-            (await resolveTennisWithGroq(item.awayTeam, apiKey));
+            lookupDictionary(item.awayTeam, TENNIS_PLAYERS_ISO) ||
+            (await resolveCountryWithGroq(item.awayTeam, 'tennis', item.competition, apiKey));
 
           if (localAway) {
             awayLogo = localAway.logoUrl;
@@ -552,31 +694,39 @@ export async function POST(req: Request) {
             awayLogo = 'https://flagcdn.com/w160/es.png';
             awayLabel = 'España';
           }
-        } else if (item.sport === 'football' || item.sport === 'basketball') {
-          // ─── FÚTBOL Y BALONCESTO: Camiseta oficial actual ───
-          const [homeKit, awayKit] = await Promise.all([
-            searchTheSportsDBKit(item.homeTeam),
-            searchTheSportsDBKit(item.awayTeam),
+        } else if (item.sport === 'football') {
+          // ─── FÚTBOL: Banderas de países de cada partido y club ───
+          const [homeFlag, awayFlag] = await Promise.all([
+            resolveFootballFlag(item.homeTeam, item.competition, apiKey),
+            resolveFootballFlag(item.awayTeam, item.competition, apiKey),
           ]);
 
-          if (homeKit) {
-            homeLogo = homeKit;
-            homeType = 'kit';
-            homeLabel = homeKit.includes('26-27') ? 'Camiseta 26-27' : 'Camiseta oficial';
-          }
-          if (awayKit) {
-            awayLogo = awayKit;
-            awayType = 'kit';
-            awayLabel = awayKit.includes('26-27') ? 'Camiseta 26-27' : 'Camiseta oficial';
-          }
-        } else {
-          // Otros deportes
-          const [homeFallback, awayFallback] = await Promise.all([
-            searchTheSportsDBKit(item.homeTeam),
-            searchTheSportsDBKit(item.awayTeam),
+          homeLogo = homeFlag.logoUrl;
+          homeLabel = homeFlag.country;
+          awayLogo = awayFlag.logoUrl;
+          awayLabel = awayFlag.country;
+        } else if (item.sport === 'basketball') {
+          // ─── BALONCESTO: Banderas de países de cada equipo ───
+          const [homeFlag, awayFlag] = await Promise.all([
+            resolveBasketballFlag(item.homeTeam, item.competition, apiKey),
+            resolveBasketballFlag(item.awayTeam, item.competition, apiKey),
           ]);
-          if (homeFallback) homeLogo = homeFallback;
-          if (awayFallback) awayLogo = awayFallback;
+
+          homeLogo = homeFlag.logoUrl;
+          homeLabel = homeFlag.country;
+          awayLogo = awayFlag.logoUrl;
+          awayLabel = awayFlag.country;
+        } else {
+          // ─── OTROS DEPORTES ───
+          const [homeFlag, awayFlag] = await Promise.all([
+            resolveFootballFlag(item.homeTeam, item.competition, apiKey),
+            resolveFootballFlag(item.awayTeam, item.competition, apiKey),
+          ]);
+
+          homeLogo = homeFlag.logoUrl;
+          homeLabel = homeFlag.country;
+          awayLogo = awayFlag.logoUrl;
+          awayLabel = awayFlag.country;
         }
 
         return {
@@ -585,8 +735,8 @@ export async function POST(req: Request) {
           awayLogo,
           homeLabel,
           awayLabel,
-          homeType,
-          awayType,
+          homeType: 'flag' as const,
+          awayType: 'flag' as const,
         };
       })
     );
@@ -595,7 +745,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Error in /api/ai/resolve-logos:', error);
     return NextResponse.json(
-      { success: false, error: 'Error al resolver logos y banderas.' },
+      { success: false, error: 'Error al resolver las banderas de los partidos.' },
       { status: 500 }
     );
   }

@@ -586,42 +586,6 @@
   cursor: not-allowed;
 }
 
-/* Botón IA: Generar Camisetas con Google Gemini */
-.generateKitsBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, hsl(215 95% 55%), hsl(275 90% 60%));
-  border: 1px solid hsl(215 90% 75% / 0.6);
-  border-radius: var(--radius-lg);
-  color: #fff;
-  font-size: 13px;
-  font-weight: var(--font-bold);
-  cursor: pointer;
-  box-shadow: 0 4px 16px hsl(260 85% 55% / 0.4);
-  transition: all var(--transition-fast);
-  position: relative;
-  overflow: hidden;
-}
-
-.generateKitsBtn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-.generateKitsBtn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 26px hsl(260 90% 60% / 0.6);
-}
-
-.generateKitsBtn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
 
 .logoInfoBadge {
   display: inline-flex;
