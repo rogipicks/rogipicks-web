@@ -85,9 +85,19 @@ function parseExcelDate(val: any): string {
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   }
 
-  // Si es un número serial de Excel (ej: 46289)
+  // Si ya es un objeto Date
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    const y = val.getFullYear();
+    const m = String(val.getMonth() + 1).padStart(2, '0');
+    const d = String(val.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  // Si es un número serial de Excel (ej: 46289 o 46307.125)
   if (typeof val === 'number') {
-    const date = new Date(Math.round((val - 25569) * 86400 * 1000));
+    const daySerial = Math.floor(val);
+    // Sumar medio día (0.5) para evitar cualquier desvío por huso horario
+    const date = new Date(Math.round((daySerial - 25569 + 0.5) * 86400 * 1000));
     if (!isNaN(date.getTime())) {
       const y = date.getUTCFullYear();
       const m = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -97,22 +107,34 @@ function parseExcelDate(val: any): string {
   }
 
   const str = String(val).trim();
-  // Formato DD/MM/YYYY o DD-MM-YYYY o DD.MM.YYYY
-  const dmMatch = str.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-  if (dmMatch) {
-    const d = dmMatch[1].padStart(2, '0');
-    const m = dmMatch[2].padStart(2, '0');
-    const y = dmMatch[3];
-    return `${y}-${m}-${d}`;
-  }
 
-  // Formato YYYY-MM-DD
+  // Formato YYYY-MM-DD (con posible hora o zona horaria detrás)
   const ymMatch = str.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
   if (ymMatch) {
     const y = ymMatch[1];
     const m = ymMatch[2].padStart(2, '0');
     const d = ymMatch[3].padStart(2, '0');
     return `${y}-${m}-${d}`;
+  }
+
+  // Formato DD/MM/YYYY o DD/MM/YY (o DD-MM-YYYY, DD.MM.YYYY)
+  const dmMatch = str.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+  if (dmMatch) {
+    const n1 = parseInt(dmMatch[1], 10);
+    const n2 = parseInt(dmMatch[2], 10);
+    const rawY = dmMatch[3];
+    const y = rawY.length === 2 ? `20${rawY}` : rawY;
+
+    let day = n1;
+    let month = n2;
+
+    // Si n1 <= 12 y n2 > 12, el formato origen era MM/DD/YYYY
+    if (n1 <= 12 && n2 > 12) {
+      month = n1;
+      day = n2;
+    }
+
+    return `${y}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   }
 
   const today = new Date();
@@ -123,12 +145,21 @@ function parseExcelDate(val: any): string {
 function parseExcelTime(val: any): string {
   if (!val) return '12:00';
 
-  // Si es un número fraccionario de Excel (ej: 0.36111 para las 08:40)
-  if (typeof val === 'number' && val < 1) {
-    const totalMinutes = Math.round(val * 24 * 60);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    const h = String(val.getHours()).padStart(2, '0');
+    const m = String(val.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  }
+
+  // Si es un número serial de Excel (ej: 0.36111 para 08:40 o 46307.125 para 03:00)
+  if (typeof val === 'number') {
+    const timeFrac = val % 1;
+    if (timeFrac > 0) {
+      const totalMinutes = Math.round(timeFrac * 24 * 60);
+      const hours = Math.floor(totalMinutes / 60) % 24;
+      const minutes = totalMinutes % 60;
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    }
   }
 
   const str = String(val).trim();
@@ -344,9 +375,9 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
   const handleFileUpload = async (file: File) => {
     try {
       const buffer = await file.arrayBuffer();
-      const wb = XLSX.read(buffer, { type: 'array' });
+      const wb = XLSX.read(buffer, { type: 'array', raw: true });
       const firstSheet = wb.Sheets[wb.SheetNames[0]];
-      const jsonRows = XLSX.utils.sheet_to_json<Record<string, any>>(firstSheet, { defval: '' });
+      const jsonRows = XLSX.utils.sheet_to_json<Record<string, any>>(firstSheet, { defval: '', raw: true });
       processRawRows(jsonRows);
     } catch (err) {
       console.error('Error al leer el archivo Excel:', err);
@@ -358,10 +389,10 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
   const handlePasteSubmit = () => {
     if (!pasteText.trim()) return;
     try {
-      // SheetJS puede leer directamente texto separado por tabulaciones (TSV)
-      const wb = XLSX.read(pasteText, { type: 'string' });
+      // SheetJS lee texto separado por tabulaciones (TSV) respetando strings crudos
+      const wb = XLSX.read(pasteText, { type: 'string', raw: true });
       const firstSheet = wb.Sheets[wb.SheetNames[0]];
-      const jsonRows = XLSX.utils.sheet_to_json<Record<string, any>>(firstSheet, { defval: '' });
+      const jsonRows = XLSX.utils.sheet_to_json<Record<string, any>>(firstSheet, { defval: '', raw: true });
       processRawRows(jsonRows);
       setPasteText('');
     } catch {
@@ -445,8 +476,16 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
       const picksToCreate: Pick[] = drafts.map((d, index) => {
         const sportObj = SPORTS_MAP[d.sport] || SPORTS_MAP.football;
         const oddsNum = parseFloat(d.odds) || 1.8;
-        const confNum = (d.confidence as PickConfidence) || 3;
-        const startTimeIso = new Date(`${d.date}T${d.time}:00`).toISOString();
+        const [y, m, dNum] = (d.date || '').split('-').map(Number);
+        const [h, min] = (d.time || '12:00').split(':').map(Number);
+        const safeDate = new Date(
+          !isNaN(y) ? y : new Date().getFullYear(),
+          !isNaN(m) ? m - 1 : new Date().getMonth(),
+          !isNaN(dNum) ? dNum : new Date().getDate(),
+          !isNaN(h) ? h : 12,
+          !isNaN(min) ? min : 0
+        );
+        const startTimeIso = safeDate.toISOString();
 
         return {
           id: `pick-admin-${Date.now()}-${index}`,

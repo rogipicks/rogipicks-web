@@ -2250,6 +2250,12 @@ export default function AdminPage() {
               saveLocalPicks(updated);
               setSuccessMsg(`✅ ¡${newPicks.length} picks importados y publicados con éxito!`);
               setTimeout(() => setSuccessMsg(''), 4000);
+              if (newPicks.length > 0 && newPicks[0].match?.startTime) {
+                const firstD = new Date(newPicks[0].match.startTime);
+                if (!isNaN(firstD.getTime())) {
+                  setAdminDate(firstD);
+                }
+              }
               setActiveTab('list');
             }}
           />
