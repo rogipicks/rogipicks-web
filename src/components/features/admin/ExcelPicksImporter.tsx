@@ -235,9 +235,9 @@ export function ExcelPicksImporter({ onPicksImported, onCancel }: ExcelPicksImpo
   const handleDownloadTemplate = () => {
     const headers = [
       ['NOMBRE LOCAL', 'NOMBRE VISITANTE', 'COMPETICIÓN', 'FECHA', 'HORA', 'APUESTA', 'CUOTA', 'PROBABILIDAD', 'CONFIANZA'],
-      ['Shang Juncheng', 'Adrian Mannarino', 'ATP Chengdu', '25/09/2026', '08:40', 'Shang Hándicap (-1.5)', '1.47', '90%', '5'],
-      ['Real Madrid', 'Barcelona', 'LaLiga EA Sports', '26/09/2026', '21:00', 'Más de 2.5 goles', '1.80', '85%', '4'],
-      ['Los Angeles Lakers', 'Boston Celtics', 'NBA', '27/09/2026', '02:30', 'Lakers +4.5 Hándicap', '1.91', '75%', '4'],
+      ['Shang Juncheng', 'Adrian Mannarino', 'ATP Chengdu', '12/10/2026', '08:40', 'Shang Hándicap (-1.5)', '1.47', '90%', '5'],
+      ['Real Madrid', 'Barcelona', 'LaLiga EA Sports', '12/10/2026', '21:00', 'Más de 2.5 goles', '1.80', '85%', '4'],
+      ['Los Angeles Lakers', 'Boston Celtics', 'NBA', '12/10/2026', '02:30', 'Lakers +4.5 Hándicap', '1.91', '75%', '4'],
     ];
     const ws = XLSX.utils.aoa_to_sheet(headers);
     const wb = XLSX.utils.book_new();

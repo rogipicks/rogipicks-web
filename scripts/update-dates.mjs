@@ -18,30 +18,25 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-console.log('KV Config:', { hasUrl: !!kvUrl, hasToken: !!kvToken });
-
 // 1. Update data/picks-db.json
 const dbFile = path.resolve('data/picks-db.json');
 let picks = [];
 if (fs.existsSync(dbFile)) {
   picks = JSON.parse(fs.readFileSync(dbFile, 'utf-8'));
-  console.log(`Picks in local DB: ${picks.length}`);
-  
+
   let modifiedCount = 0;
   for (const p of picks) {
     if (p.match?.startTime) {
-      // Reemplazar 2026-09-25 o cualquier fecha anterior por 2026-09-27
-      const oldTime = p.match.startTime;
-      p.match.startTime = oldTime.replace(/2026-09-\d{2}/, '2026-09-27');
+      p.match.startTime = p.match.startTime.replace(/2026-\d{2}-\d{2}/, '2026-10-12');
       modifiedCount++;
     }
-    if (p.createdAt && p.createdAt.includes('2026-09-25')) {
-      p.createdAt = p.createdAt.replace('2026-09-25', '2026-09-27');
+    if (p.createdAt && p.createdAt.includes('2026-')) {
+      p.createdAt = p.createdAt.replace(/2026-\d{2}-\d{2}/, '2026-10-12');
     }
   }
 
   fs.writeFileSync(dbFile, JSON.stringify(picks, null, 2), 'utf-8');
-  console.log(`Updated ${modifiedCount} picks in data/picks-db.json to 2026-09-27`);
+  console.log(`Updated ${modifiedCount} picks in data/picks-db.json to 2026-10-12`);
 }
 
 // 2. Update Upstash KV if configured
@@ -55,19 +50,16 @@ if (kvUrl && kvToken) {
     if (data?.result) {
       kvPicks = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
     }
-    console.log(`Picks in Upstash KV: ${kvPicks.length}`);
 
-    // Update dates in KV picks as well
     for (const p of kvPicks) {
       if (p.match?.startTime) {
-        p.match.startTime = p.match.startTime.replace(/2026-09-\d{2}/, '2026-09-27');
+        p.match.startTime = p.match.startTime.replace(/2026-\d{2}-\d{2}/, '2026-10-12');
       }
-      if (p.createdAt && p.createdAt.includes('2026-09-25')) {
-        p.createdAt = p.createdAt.replace('2026-09-25', '2026-09-27');
+      if (p.createdAt && p.createdAt.includes('2026-')) {
+        p.createdAt = p.createdAt.replace(/2026-\d{2}-\d{2}/, '2026-10-12');
       }
     }
 
-    // Si KV tiene picks o si queremos sincronizar con los picks locales actualizados:
     const targetPicks = kvPicks.length > 0 ? kvPicks : picks;
     const setRes = await fetch(`${kvUrl}/set/rogipicks:picks`, {
       method: 'POST',
@@ -78,7 +70,7 @@ if (kvUrl && kvToken) {
       body: JSON.stringify(JSON.stringify(targetPicks))
     });
     const setResult = await setRes.json();
-    console.log('Upstash KV updated:', setResult);
+    console.log('Upstash KV updated to 2026-10-12:', setResult);
   } catch (err) {
     console.error('Error updating Upstash KV:', err);
   }
